@@ -15,4 +15,5 @@ Here are some ideas to get you started:
 - ⚡ Fun fact: ...
 -->
 - 🔭 Working on resistors, capacitors, various chips and coding .....
-![Stats](https://github-readme-stats.vercel.app/api?username=diverger&show_icons=true)
+https://github-readme-stats.vercel.app/api?username=diverger&theme=radical&bg_color=1a1a1a&title_color=ff6b6b&icon_color=4ecdc4&count_private=true&include_all_commits=true
+
