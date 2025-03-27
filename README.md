@@ -18,6 +18,6 @@ Here are some ideas to get you started:
 
 [![GitHub Stats](https://github-readme-stats.vercel.app/api?username=diverger&show_icons=true&theme=calm_pink&include_all_commits=false&count_private=true&random=3)](https://github.com/diverger)
 [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=diverger&layout=compact&langs_count=8&count_private=true&random=3)](https://github.com/anuraghazra/github-readme-stats)
-[![Diverger's WakaTime stats](https://github-readme-stats.vercel.app/api/wakatime?username=diverger)](https://github.com/diverger)
+[![Diverger's WakaTime stats](https://github-readme-stats.vercel.app/api/wakatime?username=diverger&layout=compact)](https://github.com/diverger)
 
 
