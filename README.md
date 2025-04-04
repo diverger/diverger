@@ -16,6 +16,9 @@ Here are some ideas to get you started:
 -->
 - 🔭 Working on resistors, capacitors, various chips and coding .....
 
+
+[![GitHub Streak](https://streak-stats.demolab.com?user=diverger%40live.cn&theme=microsoft&short_numbers=true)](https://git.io/streak-stats)
+
 <div style="display: flex; flex-direction: row; justify-content:center; width: 100%;">
   <img height="140" src="https://github-readme-stats.vercel.app/api?username=diverger&show_icons=true&&hide='',theme=ambient_gradient&include_all_commits=true&count_private=true" alt="Your GitHub Stats" style="margin: 0;" />  
   <img height="140" src="https://github-readme-stats.vercel.app/api/wakatime?username=diverger&layout=compact" alt="WakaTime stats" style="margin: 0" />  
