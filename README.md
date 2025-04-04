@@ -16,8 +16,12 @@ Here are some ideas to get you started:
 -->
 - 🔭 Working on resistors, capacitors, various chips and coding .....
 
-[![GitHub Stats](https://github-readme-stats.vercel.app/api?username=diverger&show_icons=true&&hide=contribs,theme=ambient_gradient&include_all_commits=false&count_private=true&random=3)](https://github.com/diverger)
-[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=diverger&layout=compact&langs_count=8&hide_progress=true&random=3)](https://github.com/anuraghazra/github-readme-stats)
-[![Diverger's WakaTime stats](https://github-readme-stats.vercel.app/api/wakatime?username=diverger&layout=compact)](https://github.com/diverger)
+<div style="display: flex; flex-direction: row; justify-content:center;">
+  <img height="140" src="https://github-readme-stats.vercel.app/api?username=diverger&show_icons=true&&hide='',theme=ambient_gradient&include_all_commits=true&count_private=true" alt="Your GitHub Stats" style="margin: 0;" />
+  <img height="140" src="https://github-readme-stats.vercel.app/api/top-langs/?username=diverger&layout=compact&langs_count=8&hide_progress=true&random=3" alt="Top Languages" style="margin: 0;" />
+</div>
 
+<div style="display: flex; flex-direction: row; justify-content:center;">
+  <img height="auto" src="https://github-readme-stats.vercel.app/api/wakatime?username=diverger&layout=compact" alt="WakaTime stats" style="margin: 0" />
+</div>
 
