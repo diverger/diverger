@@ -22,6 +22,6 @@ Here are some ideas to get you started:
 </div>
 
 <div style="display: flex; flex-direction: row; justify-content:center; width: 100%;">
-  <img height="auto" src="https://github-readme-stats.vercel.app/api/top-langs/?username=diverger&layout=compact&langs_count=8&size_weight=0.5&count_weight=0.5&hide_progress=false&card_width=662&random=3" alt="Top Languages" style="margin: 0;" />
+  <img height="auto" src="https://github-readme-stats.vercel.app/api/top-langs/?username=diverger&layout=compact&langs_count=8&size_weight=0&count_weight=1&hide_progress=false&card_width=662&random=3" alt="Top Languages" style="margin: 0;" />
 </div>
 
