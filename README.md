@@ -16,17 +16,17 @@ Here are some ideas to get you started:
 -->
 - 🔭 Working on resistors, capacitors, various chips and coding .....
 
-<!--
-<div style="display: flex; flex-direction: row; justify-content:center; width: 100%;">
+<div style="display: flex; flex-direction: row; justify-content:left; width: 100%;">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://streak-stats.demolab.com?user=diverger&theme=github-dark&hide_border=true&short_numbers=true&card_width=665&card_height=175&fire=EB5454&ring=EB5454" alt="Streak stats" style="margin: 0;">
-        <source media="(prefers-color-scheme: light)" srcset="https://streak-stats.demolab.com?user=diverger&theme=github-light&hide_border=true&short_numbers=true&card_width=665&card_height=175&fire=EB5454&ring=EB5454" alt="Streak stats" style="margin: 0;">
-        <img height="auto" src="https://streak-stats.demolab.com?user=diverger&theme=github-dark&hide_border=true&short_numbers=true&card_width=665&card_height=175&fire=EB5454&ring=EB5454" alt="Streak stats" style="margin: 0;"/>
+        <source media="(prefers-color-scheme: dark)" srcset="https://streak-stats.demolab.com?user=diverger&theme=github-dark&hide_border=true&short_numbers=true&card_width=640&card_height=140&fire=EB5454&ring=EB5454" alt="Streak stats" style="margin: 0;">
+        <source media="(prefers-color-scheme: light)" srcset="https://streak-stats.demolab.com?user=diverger&theme=github-light&hide_border=true&short_numbers=true&card_width=640&card_height=140&fire=EB5454&ring=EB5454" alt="Streak stats" style="margin: 0;">
+        <img height="auto" src="https://streak-stats.demolab.com?user=diverger&theme=github-dark&hide_border=true&short_numbers=true&card_width=640&card_height=140&fire=EB5454&ring=EB5454" alt="Streak stats" style="margin: 0;"/>
     </picture>
 </div>
--->
 
-[![GitHub Streak](https://streak-stats.demolab.com?user=diverger&theme=default&hide_border=true&short_numbers=true&card_width=640&card_height=170)](https://git.io/streak-stats)
+<!--
+[![GitHub Streak](https://streak-stats.demolab.com?user=diverger&hide_border=true&short_numbers=true&card_width=640&card_height=170)](https://git.io/streak-stats)
+-->
 
 <div style="display: flex; flex-direction: row; justify-content:left; width: 100%;">
     <picture class="stats-picture">
