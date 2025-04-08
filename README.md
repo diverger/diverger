@@ -20,8 +20,14 @@ Here are some ideas to get you started:
 [![GitHub Streak](https://streak-stats.demolab.com?user=diverger&theme=default&hide_border=true&short_numbers=true&card_width=640&card_height=140)](https://git.io/streak-stats)
 
 <div style="display: flex; flex-direction: row; justify-content:left; width: 100%; flex-wrap: wrap;">
-    <img height="140" src="https://github-readme-stats-private-navy.vercel.app/api?username=diverger&show_icons=true&hide=''&theme=default&hide_border=true&include_all_commits=true&count_private=true&card_width=320" alt="Your GitHub Stats" style="margin: 0; min-width: 320px; flex: 1 1 320px; pointer-events: none;" />
-    <img height="140" src="https://github-readme-stats-private-navy.vercel.app/api/wakatime?username=diverger&langs_count=10&display_format=percent&layout=compact&hide_border=true&card_width=640" alt="WakaTime stats" style="margin: 0; min-width: 320px; flex: 1 1 320px; pointer-events: none;" /> 
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats-private-navy.vercel.app/api?username=diverger&show_icons=true&hide=''&theme=dark&hide_border=true&include_all_commits=true&count_private=true&card_width=320" alt="Your GitHub Stats" style="margin: 0;">
+        <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats-private-navy.vercel.app/api?username=diverger&show_icons=true&hide=''&theme=default&hide_border=true&include_all_commits=true&count_private=true&card_width=320" alt="Your GitHub Stats" style="margin: 0;">
+        <img height="140" src="https://github-readme-stats-private-navy.vercel.app/api?username=diverger&show_icons=true&hide=''&theme=default&hide_border=true&include_all_commits=true&count_private=true&card_width=320" alt="Your GitHub Stats" style="margin: 0; min-width: 320px; flex: 1 1 320px; pointer-events: none;" />
+    </picture>
+    <picture>
+        <img height="140" src="https://github-readme-stats-private-navy.vercel.app/api/wakatime?username=diverger&langs_count=10&display_format=percent&layout=compact&hide_border=true&card_width=640" alt="WakaTime stats" style="margin: 0; min-width: 320px; flex: 1 1 320px; pointer-events: none;" />
+    </picture>
 </div>
 
 <div style="display: flex; flex-direction: row; justify-content:left; width: 100%;">
