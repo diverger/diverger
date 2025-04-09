@@ -28,7 +28,7 @@ Here are some ideas to get you started:
 </div>
 -->
 
-[![GitHub Streak](https://streak-stats.demolab.com?user=diverger&hide_border=true&short_numbers=true&card_width=640&card_height=140)](https://git.io/streak-stats)
+[![GitHub Streak](https://github-readme-streak-stats-private-three.vercel.app?user=diverger&hide_border=true&short_numbers=true&card_width=640&card_height=140)](https://git.io/streak-stats)
 
 
 <div style="display: flex; flex-direction: row; justify-content:left; width: 100%;">
