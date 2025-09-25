@@ -32,7 +32,7 @@ Here are some ideas to get you started:
     <picture class="stats-picture">
         <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats-private-navy.vercel.app/api?username=diverger&show_icons=true&hide=''&theme=transparent&hide_border=true&include_all_commits=false&count_private=true&card_width=320" style="margin: 0;" />
         <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats-private-navy.vercel.app/api?username=diverger&show_icons=true&hide=''&theme=transparent&hide_border=true&include_all_commits=false&count_private=true&card_width=320" style="margin: 0;" />
-        <img height="140" src="https://github-readme-stats-private-navy.vercel.app/api?username=diverger&show_icons=true&hide=''&theme=transparent&hide_border=true&include_all_commits=false&count_private=true&card_width=320" alt="Your GitHub Stats" style="margin: 0;" />
+        <img height="140" src="https://github-readme-stats-private-navy.vercel.app/api?username=diverger&show_icons=true&hide=''&theme=transparent&hide_border=true&include_all_commits=false&count_private=true&card_width=300" alt="Your GitHub Stats" style="margin: 0;" />
     </picture>
     <picture class="stats-picture">
         <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats-private-navy.vercel.app/api/wakatime?username=diverger&langs_count=10&display_format=percent&layout=compact&theme=transparent&hide_border=true" style="margin: 0;" />
