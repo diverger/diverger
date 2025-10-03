@@ -37,7 +37,7 @@ Here are some ideas to get you started:
     <picture class="stats-picture">
         <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats-private-navy.vercel.app/api/wakatime?username=diverger&langs_count=10&display_format=percent&layout=compact&theme=transparent&hide_border=true&card_width=300" style="margin: 0;" />
         <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats-private-navy.vercel.app/api/wakatime?username=diverger&langs_count=10&display_format=percent&layout=compact&theme=transparent&hide_border=true&card_width=300" style="margin: 0;" />
-        <img height="140" src="https://github-readme-stats-private-navy.vercel.app/api/wakatime?username=diverger&langs_count=10&display_format=percent&layout=compact&hide_border=true&card_width=300" alt="WakaTime stats" style="margin: 0;" />
+        <img height="140" src="https://github-readme-stats-private-navy.vercel.app/api/wakatime?username=diverger&langs_count=10&display_format=percent&layout=compact&hide_border=true" alt="WakaTime stats" style="margin: 0;" />
     </picture>
 </div>
 
