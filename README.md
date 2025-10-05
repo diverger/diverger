@@ -48,3 +48,4 @@ Here are some ideas to get you started:
         <img height="140" src="https://github-readme-stats-private-navy.vercel.app/api/top-langs/?username=diverger&hide_title=true&layout=compact&theme=transparent&hide_border=true&langs_count=10&size_weight=0.2&count_weight=0.8&hide_progress=false&card_width=640&random=3" alt="Top Languages" style="margin: 0;" />
     </picture>
 </div>
+![](https://komarev.com/ghpvc/?username=diverger&style=flat-square)
