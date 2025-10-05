@@ -1,5 +1,3 @@
-### Hi there 👋 ![](https://komarev.com/ghpvc/?username=diverger&style=flat-square&label=👋)
-
 <!--
 **diverger/diverger** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
@@ -14,7 +12,7 @@ Here are some ideas to get you started:
 - 😄 Pronouns: ...
 - ⚡ Fun fact: ...
 -->
-- 🔭 Working with resistors, capacitors, various chips and coding .....
+- ![](https://komarev.com/ghpvc/?username=diverger&style=flat-square&label=👋) Working with resistors, capacitors, various chips and coding ..... 
 
 <div style="display: flex; flex-direction: row; justify-content:left; width: 100%;">
     <picture>
