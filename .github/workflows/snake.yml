@@ -21,6 +21,10 @@ jobs:
     timeout-minutes: 5
 
     steps:
+      # checkout the repository to access local actions
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       # generates a snake game from a github user (<github_user_name>) contributions graph, output a svg animation at <svg_out_path>
       - name: Generate GitHub Contributions Snake Animations
         uses: Platane/snk@v3
