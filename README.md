@@ -46,3 +46,18 @@ Here are some ideas to get you started:
         <img height="140" src="https://github-readme-stats-private-navy.vercel.app/api/top-langs/?username=diverger&hide_title=true&layout=compact&theme=transparent&hide_border=true&langs_count=10&size_weight=0.2&count_weight=0.8&hide_progress=false&card_width=640&random=3" alt="Top Languages" style="margin: 0;" />
     </picture>
 </div>
+
+<picture>
+  <source
+    media="(prefers-color-scheme: dark)"
+    srcset="https://raw.githubusercontent.com/platane/snk/output/github-contribution-grid-snake-dark.svg"
+  />
+  <source
+    media="(prefers-color-scheme: light)"
+    srcset="https://raw.githubusercontent.com/platane/snk/output/github-contribution-grid-snake.svg"
+  />
+  <img
+    alt="github contribution grid snake animation"
+    src="https://raw.githubusercontent.com/platane/snk/output/github-contribution-grid-snake.svg"
+  />
+</picture>
