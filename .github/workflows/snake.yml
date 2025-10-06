@@ -48,6 +48,7 @@ jobs:
         with:
           gif_path: dist/ocean.gif
           output_path: dist/trans.gif
+          bg_color: 'white'
 
       # push the content of <build_dir> to a branch
       # the content will be available at https://raw.githubusercontent.com/<github_user>/<repository>/<target_branch>/<file> , or as github page
