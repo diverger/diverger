@@ -59,5 +59,6 @@ Here are some ideas to get you started:
   <img
     alt="github contribution grid snake animation"
     src="https://raw.githubusercontent.com/platane/snk/output/github-contribution-grid-snake.svg"
+    width="640"
   />
 </picture>
