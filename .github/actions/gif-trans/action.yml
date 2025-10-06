@@ -1,0 +1,24 @@
+name: 'Make GIF Background Transparent'
+description: 'Converts a GIF file to have a transparent background by making the specified color transparent'
+inputs:
+  gif_path:
+    description: 'Path to the input GIF file'
+    required: true
+  output_path:
+    description: 'Path for the output GIF file with transparency'
+    required: false
+    default: 'transparent.gif'
+  bg_color:
+    description: 'Background color to make transparent (e.g., white, #ffffff)'
+    required: false
+    default: 'white'
+runs:
+  using: 'composite'
+  steps:
+    - name: Install ImageMagick
+      run: sudo apt-get update && sudo apt-get install -y imagemagick
+      shell: bash
+    - name: Convert GIF to GIF with transparent background
+      run: convert ${{ inputs.gif_path }} -transparent ${{ inputs.bg_color }} ${{ inputs.output_path }}
+      shell: bash
+      
