@@ -50,6 +50,10 @@ jobs:
         run: ls -la dist/
         shell: bash
 
+      - name: Fix dist directory permissions
+        run: sudo chown -R runner:runner dist/
+        shell: bash
+
       - name: Convert GIF to GIF with transparent background
         uses: ./.github/actions/gif-trans
         with:
