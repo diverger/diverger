@@ -66,7 +66,7 @@ Here are some ideas to get you started:
 
   <img
     alt="github contribution grid snake animation"
-    src="https://raw.githubusercontent.com/diverger/diverger/output/ocean.gif"
+    src="https://raw.githubusercontent.com/diverger/diverger/output/github-snake.svg"
     width="640"
   />    
 </picture>
