@@ -47,15 +47,15 @@ Here are some ideas to get you started:
     </picture>
 </div>
 
-<picture>
+<!-- <picture>
   <source
     media="(prefers-color-scheme: dark)"
-    srcset="https://raw.githubusercontent.com/diverger/diverger/output/github-snake-dark.svg"
+    srcset="https://raw.githubusercontent.com/diverger/diverger/output/github-snake-dark.svg#gh-dark-mode-only"
   />
 
   <source
     media="(prefers-color-scheme: light)"
-    srcset="https://raw.githubusercontent.com/diverger/diverger/output/github-snake.svg"
+    srcset="https://raw.githubusercontent.com/diverger/diverger/output/github-snake.svg#gh-light-mode-only"
   />
 
   <img
@@ -63,4 +63,9 @@ Here are some ideas to get you started:
     src="https://raw.githubusercontent.com/diverger/diverger/output/github-snake.svg"
     width="640"
   />
-</picture>
+</picture> -->
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/diverger/diverger/output/github-snake.svg#gh-light-mode-only" alt="github contribution grid snake animation" width="640">
+  <img src="https://raw.githubusercontent.com/diverger/diverger/output/github-snake-dark.svg#gh-dark-mode-only" alt="github contribution grid snake animation" width="640">
+</p>
