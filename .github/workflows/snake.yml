@@ -26,41 +26,54 @@ jobs:
 
       - name: Set color scheme by CST weekday
         id: colors
+        shell: python
         env:
-          LIGHT_COLORS: '#FFB3BA, #FFDFBA, #FFFFBA, #BAFFC9, #BAE1FF, #D5BAFF, #FFBAED'
-          DARK_COLORS:  '#FF6F61, #FFB347, #FFF275, #00C49A, #0096FF, #A259FF, #F06292'
-          LIGHT_DOTS: |
-            #ffeaea, #ffd6c2, #fff9c2, #e2ffe9, #e2f3ff
-            #fff0e6, #ffe5cc, #fffbe6, #e6fff2, #e6f7ff
-            #ffffe6, #fffbe6, #ffffcc, #f0fff0, #e6f7ff
-            #e6fff2, #e6ffe6, #e6fff9, #e6fff7, #e6f7ff
-            #e6f7ff, #e6f0ff, #e6e6ff, #e6e6ff, #e6e6ff
-            #f0e6ff, #f7e6ff, #fbe6ff, #ffe6fa, #ffe6f7
-            #ffe6f7, #ffe6fa, #ffe6ff, #ffe6ff, #ffe6ff
-          DARK_DOTS: |
-            #3c2f2f, #4b3832, #854442, #fff275, #ffb347
-            #2e1a47, #3c2f2f, #4b3832, #854442, #ff6f61
-            #1a1a2e, #16213e, #0f3460, #e94560, #fff275
-            #232931, #393e46, #4ecca3, #00c49a, #0096ff
-            #22223b, #4a4e69, #9a8c98, #c9ada7, #0096ff
-            #2d132c, #801336, #c72c41, #a259ff, #f06292
-            #3e1f47, #5e239d, #a259ff, #f06292, #ff6f61
-
+          LIGHT_SCHEMAS: |
+            [
+              {"style":"清新","snake":"#00897B","dots":["#e0f7f4","#b2f2e9","#80eccc","#4bd6b3","#00bfa5"]},
+              {"style":"夕阳","snake":"#FF7043","dots":["#fff3e0","#ffe0b2","#ffcc80","#ffb74d","#ff8a65"]},
+              {"style":"怀旧","snake":"#B57C4D","dots":["#fbf3ea","#f2dfc9","#e6c79f","#d2a879","#b57c4d"]},
+              {"style":"未来","snake":"#2196F3","dots":["#e1f5fe","#b3e5fc","#81d4fa","#4fc3f7","#03a9f4"]},
+              {"style":"温暖","snake":"#FFB300","dots":["#fff8e1","#ffecb3","#ffe082","#ffd54f","#ffb300"]},
+              {"style":"浪漫","snake":"#D81B60","dots":["#fce4ec","#f8bbd0","#f48fb1","#f06292","#d81b60"]},
+              {"style":"梦幻","snake":"#AB47BC","dots":["#f3e5f5","#e1bee7","#ce93d8","#ba68c8","#ab47bc"]}
+            ]
+          DARK_SCHEMAS: |
+            [
+              {"style":"清新","snake":"#00796B","dots":["#c8f7f1","#9fefe6","#6ee5d7","#42d4c8","#00bfa5"]},
+              {"style":"夕阳","snake":"#D24C13","dots":["#fff0d6","#ffd2a8","#ffb57a","#ff944f","#d24c13"]},
+              {"style":"怀旧","snake":"#7A4B2A","dots":["#f6e9df","#e6ccb3","#d2ab88","#b88759","#7a4b2a"]},
+              {"style":"未来","snake":"#0066CC","dots":["#dff3ff","#bfe9ff","#8fdaff","#59caff","#0066cc"]},
+              {"style":"温暖","snake":"#8B5E3C","dots":["#fff6e0","#ffe8bf","#ffd89e","#ffc27a","#8b5e3c"]},
+              {"style":"朋克","snake":"#8B1D78","dots":["#f7dbe9","#efb6d6","#e887c6","#dd4aa9","#8b1d78"]},
+              {"style":"复古","snake":"#6A2C91","dots":["#f1e6fb","#e0c9f5","#ccaef0","#b08ae8","#6a2c91"]}
+            ]
         run: |
-          CST_DAY=$(TZ=America/Chicago date +%w)
-          IFS=',' read -ra LIGHTS <<< "$LIGHT_COLORS"
-          IFS=',' read -ra DARKS <<< "$DARK_COLORS"
-          # Read dot color sets into arrays of arrays
-          mapfile -t LIGHT_DOTS_ARRAYS < <(echo "$LIGHT_DOTS")
-          mapfile -t DARK_DOTS_ARRAYS < <(echo "$DARK_DOTS")
-          LIGHT_COLOR="${LIGHTS[$CST_DAY]}"
-          DARK_COLOR="${DARKS[$CST_DAY]}"
-          LIGHT_DOTS_SET=$(echo "${LIGHT_DOTS_ARRAYS[$CST_DAY]}" | tr -d ' ')
-          DARK_DOTS_SET=$(echo "${DARK_DOTS_ARRAYS[$CST_DAY]}" | tr -d ' ')
-          echo "light_color=$LIGHT_COLOR" >> $GITHUB_OUTPUT
-          echo "dark_color=$DARK_COLOR" >> $GITHUB_OUTPUT
-          echo "light_dots=$LIGHT_DOTS_SET" >> $GITHUB_OUTPUT
-          echo "dark_dots=$DARK_DOTS_SET" >> $GITHUB_OUTPUT
+          import os, json
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+
+          now_cst = datetime.now(ZoneInfo('America/Chicago'))
+          py_weekday = now_cst.weekday()
+          sun_idx = (py_weekday + 1) % 7
+
+          light = json.loads(os.environ['LIGHT_SCHEMAS'])
+          dark = json.loads(os.environ['DARK_SCHEMAS'])
+          entry_light = light[sun_idx]
+          entry_dark = dark[sun_idx]
+
+          light_snake = entry_light['snake'].strip()
+          dark_snake = entry_dark['snake'].strip()
+          light_dots = ', '.join([d.strip() for d in entry_light['dots']])
+          dark_dots = ', '.join([d.strip() for d in entry_dark['dots']])
+
+          out = os.environ.get('GITHUB_OUTPUT')
+          if out:
+              with open(out, 'a') as f:
+                  f.write(f"light_color={light_snake}\n")
+                  f.write(f"dark_color={dark_snake}\n")
+                  f.write(f"light_dots={light_dots}\n")
+                  f.write(f"dark_dots={dark_dots}\n")
 
       - name: Generate GitHub Contributions Snake Animations
         uses: Platane/snk@v3
