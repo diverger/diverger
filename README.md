@@ -55,18 +55,12 @@ Here are some ideas to get you started:
 
   <source
     media="(prefers-color-scheme: light)"
-    srcset="https://raw.githubusercontent.com/diverger/diverger/output/github-snake.svg" 
+    srcset="https://raw.githubusercontent.com/diverger/diverger/output/github-snake.svg"
   />
-
-  <!-- img
-    alt="github contribution grid snake animation"
-    src="https://raw.githubusercontent.com/diverger/diverger/output/github-snake.svg"
-    width="640"
-  -->
 
   <img
     alt="github contribution grid snake animation"
     src="https://raw.githubusercontent.com/diverger/diverger/output/github-snake.svg"
     width="640"
-  />    
+  />
 </picture>
