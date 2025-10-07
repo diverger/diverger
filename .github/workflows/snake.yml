@@ -27,24 +27,24 @@ jobs:
       - name: Set color scheme by CST weekday
         id: colors
         env:
-          LIGHT_COLORS: '#FFB3BA,#FFDFBA,#FFFFBA,#BAFFC9,#BAE1FF,#D5BAFF,#FFBAED'
-          DARK_COLORS:  '#FF6F61,#FFB347,#FFF275,#00C49A,#0096FF,#A259FF,#F06292'
+          LIGHT_COLORS: '#FFB3BA, #FFDFBA, #FFFFBA, #BAFFC9, #BAE1FF, #D5BAFF, #FFBAED'
+          DARK_COLORS:  '#FF6F61, #FFB347, #FFF275, #00C49A, #0096FF, #A259FF, #F06292'
           LIGHT_DOTS: |
-            #ffeaea,#ffd6c2,#fff9c2,#e2ffe9,#e2f3ff
-            #fff0e6,#ffe5cc,#fffbe6,#e6fff2,#e6f7ff
-            #ffffe6,#fffbe6,#ffffcc,#f0fff0,#e6f7ff
-            #e6fff2,#e6ffe6,#e6fff9,#e6fff7,#e6f7ff
-            #e6f7ff,#e6f0ff,#e6e6ff,#e6e6ff,#e6e6ff
-            #f0e6ff,#f7e6ff,#fbe6ff,#ffe6fa,#ffe6f7
-            #ffe6f7,#ffe6fa,#ffe6ff,#ffe6ff,#ffe6ff
+            #ffeaea, #ffd6c2, #fff9c2, #e2ffe9, #e2f3ff
+            #fff0e6, #ffe5cc, #fffbe6, #e6fff2, #e6f7ff
+            #ffffe6, #fffbe6, #ffffcc, #f0fff0, #e6f7ff
+            #e6fff2, #e6ffe6, #e6fff9, #e6fff7, #e6f7ff
+            #e6f7ff, #e6f0ff, #e6e6ff, #e6e6ff, #e6e6ff
+            #f0e6ff, #f7e6ff, #fbe6ff, #ffe6fa, #ffe6f7
+            #ffe6f7, #ffe6fa, #ffe6ff, #ffe6ff, #ffe6ff
           DARK_DOTS: |
-            #3c2f2f,#4b3832,#854442,#fff275,#ffb347
-            #2e1a47,#3c2f2f,#4b3832,#854442,#ff6f61
-            #1a1a2e,#16213e,#0f3460,#e94560,#fff275
-            #232931,#393e46,#4ecca3,#00c49a,#0096ff
-            #22223b,#4a4e69,#9a8c98,#c9ada7,#0096ff
-            #2d132c,#801336,#c72c41,#a259ff,#f06292
-            #3e1f47,#5e239d,#a259ff,#f06292,#ff6f61
+            #3c2f2f, #4b3832, #854442, #fff275, #ffb347
+            #2e1a47, #3c2f2f, #4b3832, #854442, #ff6f61
+            #1a1a2e, #16213e, #0f3460, #e94560, #fff275
+            #232931, #393e46, #4ecca3, #00c49a, #0096ff
+            #22223b, #4a4e69, #9a8c98, #c9ada7, #0096ff
+            #2d132c, #801336, #c72c41, #a259ff, #f06292
+            #3e1f47, #5e239d, #a259ff, #f06292, #ff6f61
 
         run: |
           CST_DAY=$(TZ=America/Chicago date +%w)
