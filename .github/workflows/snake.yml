@@ -21,30 +21,55 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      # checkout the repository to access local actions
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # generates a snake game from a github user (<github_user_name>) contributions graph, output a svg animation at <svg_out_path>
+      - name: Set color scheme by CST weekday
+        id: colors
+        env:
+          LIGHT_COLORS: '#FFB3BA,#FFDFBA,#FFFFBA,#BAFFC9,#BAE1FF,#D5BAFF,#FFBAED'
+          DARK_COLORS:  '#FF6F61,#FFB347,#FFF275,#00C49A,#0096FF,#A259FF,#F06292'
+          LIGHT_DOTS: |
+            #ffeaea,#ffd6c2,#fff9c2,#e2ffe9,#e2f3ff
+            #fff0e6,#ffe5cc,#fffbe6,#e6fff2,#e6f7ff
+            #ffffe6,#fffbe6,#ffffcc,#f0fff0,#e6f7ff
+            #e6fff2,#e6ffe6,#e6fff9,#e6fff7,#e6f7ff
+            #e6f7ff,#e6f0ff,#e6e6ff,#e6e6ff,#e6e6ff
+            #f0e6ff,#f7e6ff,#fbe6ff,#ffe6fa,#ffe6f7
+            #ffe6f7,#ffe6fa,#ffe6ff,#ffe6ff,#ffe6ff
+          DARK_DOTS: |
+            #3c2f2f,#4b3832,#854442,#fff275,#ffb347
+            #2e1a47,#3c2f2f,#4b3832,#854442,#ff6f61
+            #1a1a2e,#16213e,#0f3460,#e94560,#fff275
+            #232931,#393e46,#4ecca3,#00c49a,#0096ff
+            #22223b,#4a4e69,#9a8c98,#c9ada7,#0096ff
+            #2d132c,#801336,#c72c41,#a259ff,#f06292
+            #3e1f47,#5e239d,#a259ff,#f06292,#ff6f61
+
+        run: |
+          CST_DAY=$(TZ=America/Chicago date +%w)
+          IFS=',' read -ra LIGHTS <<< "$LIGHT_COLORS"
+          IFS=',' read -ra DARKS <<< "$DARK_COLORS"
+          # Read dot color sets into arrays of arrays
+          mapfile -t LIGHT_DOTS_ARRAYS < <(echo "$LIGHT_DOTS")
+          mapfile -t DARK_DOTS_ARRAYS < <(echo "$DARK_DOTS")
+          LIGHT_COLOR="${LIGHTS[$CST_DAY]}"
+          DARK_COLOR="${DARKS[$CST_DAY]}"
+          LIGHT_DOTS_SET=$(echo "${LIGHT_DOTS_ARRAYS[$CST_DAY]}" | tr -d ' ')
+          DARK_DOTS_SET=$(echo "${DARK_DOTS_ARRAYS[$CST_DAY]}" | tr -d ' ')
+          echo "light_color=$LIGHT_COLOR" >> $GITHUB_OUTPUT
+          echo "dark_color=$DARK_COLOR" >> $GITHUB_OUTPUT
+          echo "light_dots=$LIGHT_DOTS_SET" >> $GITHUB_OUTPUT
+          echo "dark_dots=$DARK_DOTS_SET" >> $GITHUB_OUTPUT
+
       - name: Generate GitHub Contributions Snake Animations
         uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
-          # list of files to generate.
-          # one file per line. Each output can be customized with options as query string.
-          #
-          #  supported options:
-          #  - palette:     A preset of color, one of [github, github-dark, github-light]
-          #  - color_snake: Color of the snake
-          #  - color_dots:  Coma separated list of dots color.
-          #                 The first one is 0 contribution, then it goes from the low contribution to the highest.
-          #                 Exactly 5 colors are expected.
           outputs: |
-            dist/github-snake-dark.svg?palette=github-dark
-            dist/github-snake.svg?color_snake=orange&color_dots=#bfd6f6,#8dbdff,#64a1f4,#4b91f1,#3c7dd9
-            
-      # dist/ocean.gif?color_snake=orange&color_dots=#bfd6f6,#8dbdff,#64a1f4,#4b91f1,#3c7dd9
-      
+            dist/github-snake-dark.svg?color_snake=${{ steps.colors.outputs.dark_color }}&color_dots=${{ steps.colors.outputs.dark_dots }}&palette=github-dark
+            dist/github-snake.svg?color_snake=${{ steps.colors.outputs.light_color }}&color_dots=${{ steps.colors.outputs.light_dots }}&palette=github-light
+
       # push the content of <build_dir> to a branch
       # the content will be available at https://raw.githubusercontent.com/<github_user>/<repository>/<target_branch>/<file> , or as github page
       - name: push github-snake.svg to the output branch
