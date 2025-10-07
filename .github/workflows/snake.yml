@@ -30,23 +30,23 @@ jobs:
         env:
           LIGHT_SCHEMAS: |
             [
-              {"style":"清新","snake":"#26A69A","dots":["#E0F2F1","#B2DFDB","#80CBC4","#4DB6AC","#26A69A"]},
-              {"style":"夕阳","snake":"#FF7043","dots":["#FBE9E7","#FFCCBC","#FFAB91","#FF8A65","#FF7043"]},
-              {"style":"怀旧","snake":"#A1887F","dots":["#EFEBE9","#D7CCC8","#BCAAA4","#A1887F","#8D6E63"]},
-              {"style":"未来","snake":"#42A5F5","dots":["#E3F2FD","#BBDEFB","#90CAF9","#64B5F6","#42A5F5"]},
-              {"style":"金秋","snake":"#FFA726","dots":["#FFF3E0","#FFE0B2","#FFCC80","#FFB74D","#FFA726"]},
-              {"style":"浪漫","snake":"#EC407A","dots":["#FCE4EC","#F8BBD0","#F48FB1","#F06292","#EC407A"]},
-              {"style":"梦幻","snake":"#AB47BC","dots":["#F3E5F5","#E1BEE7","#CE93D8","#BA68C8","#AB47BC"]}
+              {"style":"海洋","snake":"#0097A7","dots":["#E0F7FA","#B2EBF2","#80DEEA","#4DD0E1","#26C6DA"]},
+              {"style":"火焰","snake":"#F4511E","dots":["#FBE9E7","#FFCCBC","#FFAB91","#FF8A65","#FF7043"]},
+              {"style":"森林","snake":"#689F38","dots":["#F1F8E9","#DCEDC8","#C5E1A5","#AED581","#9CCC65"]},
+              {"style":"科技","snake":"#5E35B1","dots":["#EDE7F6","#D1C4E9","#B39DDB","#9575CD","#7E57C2"]},
+              {"style":"晨曦","snake":"#FFA000","dots":["#FFF8E1","#FFECB3","#FFE082","#FFD54F","#FFCA28"]},
+              {"style":"樱花","snake":"#EC407A","dots":["#FCE4EC","#F8BBD0","#F48FB1","#F06292","#EC407A"]},
+              {"style":"暮色","snake":"#5D4037","dots":["#EFEBE9","#D7CCC8","#BCAAA4","#A1887F","#8D6E63"]}
             ]
           DARK_SCHEMAS: |
             [
-              {"style":"清新","snake":"#00897B","dots":["#B2DFDB","#80CBC4","#4DB6AC","#26A69A","#00897B"]},
-              {"style":"夕阳","snake":"#E64A19","dots":["#FFCCBC","#FFAB91","#FF8A65","#FF7043","#E64A19"]},
-              {"style":"怀旧","snake":"#6D4C41","dots":["#D7CCC8","#BCAAA4","#A1887F","#8D6E63","#6D4C41"]},
-              {"style":"未来","snake":"#1976D2","dots":["#BBDEFB","#90CAF9","#64B5F6","#42A5F5","#1976D2"]},
-              {"style":"金秋","snake":"#F57C00","dots":["#FFE0B2","#FFCC80","#FFB74D","#FFA726","#F57C00"]},
-              {"style":"朋克","snake":"#C2185B","dots":["#F8BBD0","#F48FB1","#F06292","#EC407A","#C2185B"]},
-              {"style":"复古","snake":"#7B1FA2","dots":["#E1BEE7","#CE93D8","#BA68C8","#AB47BC","#7B1FA2"]}
+              {"style":"深海","snake":"#00838F","dots":["#B2EBF2","#80DEEA","#4DD0E1","#26C6DA","#00ACC1"]},
+              {"style":"熔岩","snake":"#D84315","dots":["#FFCCBC","#FFAB91","#FF8A65","#FF7043","#FF5722"]},
+              {"style":"丛林","snake":"#558B2F","dots":["#DCEDC8","#C5E1A5","#AED581","#9CCC65","#8BC34A"]},
+              {"style":"赛博","snake":"#4527A0","dots":["#D1C4E9","#B39DDB","#9575CD","#7E57C2","#673AB7"]},
+              {"style":"琥珀","snake":"#FF8F00","dots":["#FFECB3","#FFE082","#FFD54F","#FFCA28","#FFC107"]},
+              {"style":"玫瑰","snake":"#AD1457","dots":["#F8BBD0","#F48FB1","#F06292","#EC407A","#E91E63"]},
+              {"style":"咖啡","snake":"#4E342E","dots":["#D7CCC8","#BCAAA4","#A1887F","#8D6E63","#795548"]}
             ]
 
         run: |
