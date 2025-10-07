@@ -26,7 +26,7 @@ Here are some ideas to get you started:
 [![GitHub Streak](https://github-readme-streak-stats-private-beryl.vercel.app/app?user=diverger&hide_border=true&short_numbers=true&card_width=640&card_height=140&fire=EB5454)](https://git.io/streak-stats)
 -->
 
-<div style="display: flex; flex-direction: row; justify-content:left; width: 100%;">
+<div style="display: flex; flex-direction: row; justify-content:center; width: 100%;">
     <picture class="stats-picture">
         <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats-private-navy.vercel.app/api?username=diverger&show_icons=true&hide=''&theme=transparent&hide_border=true&include_all_commits=false&count_private=true&card_width=320" style="margin: 0;" />
         <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats-private-navy.vercel.app/api?username=diverger&show_icons=true&hide=''&theme=transparent&hide_border=true&include_all_commits=false&count_private=true&card_width=320" style="margin: 0;" />
@@ -39,7 +39,7 @@ Here are some ideas to get you started:
     </picture>
 </div>
 
-<div style="display: flex; flex-direction: row; justify-content:left; width: 100%;">
+<div style="display: flex; flex-direction: row; justify-content:center; width: 100%;">
     <picture>
         <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats-private-navy.vercel.app/api/top-langs/?username=diverger&hide_title=false&layout=compact&theme=transparent&hide_border=true&langs_count=10&size_weight=0.2&count_weight=0.8&hide_progress=false&card_width=640&random=3" style="margin: 0;" />
         <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats-private-navy.vercel.app/api/top-langs/?username=diverger&hide_title=false&layout=compact&theme=transparent&hide_border=true&langs_count=10&size_weight=0.2&count_weight=0.8&hide_progress=false&card_width=640&random=3" style="margin: 0;" />
