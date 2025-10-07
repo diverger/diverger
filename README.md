@@ -31,9 +31,10 @@ Here are some ideas to get you started:
 -->
 
 <p align="center">
-  <img height="140" src="https://github-readme-stats-private-navy.vercel.app/api?username=diverger&show_icons=true&hide=''&theme=transparent&hide_border=true&include_all_commits=false&count_private=true&card_width=320" alt="Your GitHub Stats" />
-  <img height="140" src="https://github-readme-stats-private-navy.vercel.app/api/wakatime?username=diverger&langs_count=10&display_format=percent&layout=compact&theme=transparent&hide_border=true" alt="WakaTime stats" />
+  <a href="#"><img height="140" src="https://github-readme-stats-private-navy.vercel.app/api?username=diverger&show_icons=true&hide=''&theme=transparent&hide_border=true&include_all_commits=false&count_private=true&card_width=320" alt="Your GitHub Stats" /></a>
+  <a href="#"><img height="140" src="https://github-readme-stats-private-navy.vercel.app/api/wakatime?username=diverger&langs_count=10&display_format=percent&layout=compact&theme=transparent&hide_border=true" alt="WakaTime stats" /></a>
 </p>
+
 
 <div style="display: flex; justify-content:center; align-items: flex-start; width: 100%;">
     <p align="center">
