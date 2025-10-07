@@ -40,13 +40,13 @@ jobs:
             ]
           DARK_SCHEMAS: |
             [
-              {"style":"深海","snake":"#00838F","dots":["#B2EBF2","#80DEEA","#4DD0E1","#26C6DA","#00ACC1"]},
-              {"style":"熔岩","snake":"#D84315","dots":["#FFCCBC","#FFAB91","#FF8A65","#FF7043","#FF5722"]},
-              {"style":"丛林","snake":"#558B2F","dots":["#DCEDC8","#C5E1A5","#AED581","#9CCC65","#8BC34A"]},
-              {"style":"赛博","snake":"#4527A0","dots":["#D1C4E9","#B39DDB","#9575CD","#7E57C2","#673AB7"]},
-              {"style":"琥珀","snake":"#FF8F00","dots":["#FFECB3","#FFE082","#FFD54F","#FFCA28","#FFC107"]},
-              {"style":"玫瑰","snake":"#AD1457","dots":["#F8BBD0","#F48FB1","#F06292","#EC407A","#E91E63"]},
-              {"style":"咖啡","snake":"#4E342E","dots":["#D7CCC8","#BCAAA4","#A1887F","#8D6E63","#795548"]}
+              {"style":"深海","snake":"#006064","dots":["#004B54","#005A63","#006D76","#00838F","#17A1A8"]},
+              {"style":"熔岩","snake":"#BF360C","dots":["#5A1F12","#7A2A14","#9A3415","#B73C15","#D84315"]},
+              {"style":"丛林","snake":"#2E7D32","dots":["#1F5A22","#256428","#2E7D32","#3A8F3A","#4CAF50"]},
+              {"style":"赛博","snake":"#512DA8","dots":["#2A1F62","#3A2B78","#4A3690","#5B40A6","#6A48B9"]},
+              {"style":"琥珀","snake":"#FF6F00","dots":["#734300","#8C5400","#A66400","#C97800","#FF8F00"]},
+              {"style":"玫瑰","snake":"#880E4F","dots":["#5A1535","#6E1A42","#7F1E4C","#931C55","#AD1457"]},
+              {"style":"咖啡","snake":"#3E2723","dots":["#2F211F","#3A2A26","#44312C","#4D382F","#5D4037"]}
             ]
 
         run: |
