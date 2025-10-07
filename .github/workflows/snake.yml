@@ -7,6 +7,21 @@ on:
 
   # allows to manually run the job at any time
   workflow_dispatch:
+    inputs:
+      style:
+        description: 'Color style to use (0-6 for Monday-Sunday, or leave empty for auto)'
+        required: false
+        type: choice
+        options:
+          - 'auto'
+          - '0 - 海洋/深海 (Monday)'
+          - '1 - 火焰/熔岩 (Tuesday)'
+          - '2 - 森林/丛林 (Wednesday)'
+          - '3 - 科技/赛博 (Thursday)'
+          - '4 - 晨曦/琥珀 (Friday)'
+          - '5 - 樱花/玫瑰 (Saturday)'
+          - '6 - 暮色/咖啡 (Sunday)'
+        default: 'auto'
 
   # run on every push on the master branch
   push:
@@ -28,6 +43,7 @@ jobs:
         id: colors
         shell: python
         env:
+          MANUAL_STYLE: ${{ github.event.inputs.style || 'auto' }}
           LIGHT_SCHEMAS: |
             [
               {"style":"海洋","snake":"#0097A7","dots":["#E0F7FA","#B2EBF2","#80DEEA","#4DD0E1","#26C6DA"]},
@@ -54,9 +70,16 @@ jobs:
           from datetime import datetime
           from zoneinfo import ZoneInfo
 
-          now_china = datetime.now(ZoneInfo('Asia/Shanghai'))
-          py_weekday = now_china.weekday()
-          sun_idx = (py_weekday + 1) % 7
+          # Check if manual style is selected
+          manual_style = os.environ.get('MANUAL_STYLE', 'auto')
+
+          if manual_style != 'auto':
+              # Extract the index from the choice (e.g., "0 - 海洋/深海 (Monday)" -> 0)
+              sun_idx = int(manual_style.split(' ')[0])
+          else:
+              # Use China timezone to determine the day (0=Monday, 6=Sunday)
+              now_china = datetime.now(ZoneInfo('Asia/Shanghai'))
+              sun_idx = now_china.weekday()  # 0=Monday, 6=Sunday
 
           light = json.loads(os.environ['LIGHT_SCHEMAS'])
           dark = json.loads(os.environ['DARK_SCHEMAS'])
