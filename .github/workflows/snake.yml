@@ -24,37 +24,38 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set color scheme by CST weekday
+      - name: Set color scheme by China weekday
         id: colors
         shell: python
         env:
           LIGHT_SCHEMAS: |
             [
-              {"style":"清新","snake":"#00897B","dots":["#e0f7f4","#b2f2e9","#80eccc","#4bd6b3","#00bfa5"]},
-              {"style":"夕阳","snake":"#FF7043","dots":["#fff3e0","#ffe0b2","#ffcc80","#ffb74d","#ff8a65"]},
-              {"style":"怀旧","snake":"#B57C4D","dots":["#fbf3ea","#f2dfc9","#e6c79f","#d2a879","#b57c4d"]},
-              {"style":"未来","snake":"#2196F3","dots":["#e1f5fe","#b3e5fc","#81d4fa","#4fc3f7","#03a9f4"]},
-              {"style":"温暖","snake":"#FFB300","dots":["#fff8e1","#ffecb3","#ffe082","#ffd54f","#ffb300"]},
-              {"style":"浪漫","snake":"#D81B60","dots":["#fce4ec","#f8bbd0","#f48fb1","#f06292","#d81b60"]},
-              {"style":"梦幻","snake":"#AB47BC","dots":["#f3e5f5","#e1bee7","#ce93d8","#ba68c8","#ab47bc"]}
+              {"style":"清新","snake":"#26A69A","dots":["#E0F2F1","#B2DFDB","#80CBC4","#4DB6AC","#26A69A"]},
+              {"style":"夕阳","snake":"#FF7043","dots":["#FBE9E7","#FFCCBC","#FFAB91","#FF8A65","#FF7043"]},
+              {"style":"怀旧","snake":"#A1887F","dots":["#EFEBE9","#D7CCC8","#BCAAA4","#A1887F","#8D6E63"]},
+              {"style":"未来","snake":"#42A5F5","dots":["#E3F2FD","#BBDEFB","#90CAF9","#64B5F6","#42A5F5"]},
+              {"style":"金秋","snake":"#FFA726","dots":["#FFF3E0","#FFE0B2","#FFCC80","#FFB74D","#FFA726"]},
+              {"style":"浪漫","snake":"#EC407A","dots":["#FCE4EC","#F8BBD0","#F48FB1","#F06292","#EC407A"]},
+              {"style":"梦幻","snake":"#AB47BC","dots":["#F3E5F5","#E1BEE7","#CE93D8","#BA68C8","#AB47BC"]}
             ]
           DARK_SCHEMAS: |
             [
-              {"style":"清新","snake":"#00796B","dots":["#c8f7f1","#9fefe6","#6ee5d7","#42d4c8","#00bfa5"]},
-              {"style":"夕阳","snake":"#D24C13","dots":["#fff0d6","#ffd2a8","#ffb57a","#ff944f","#d24c13"]},
-              {"style":"怀旧","snake":"#7A4B2A","dots":["#f6e9df","#e6ccb3","#d2ab88","#b88759","#7a4b2a"]},
-              {"style":"未来","snake":"#0066CC","dots":["#dff3ff","#bfe9ff","#8fdaff","#59caff","#0066cc"]},
-              {"style":"温暖","snake":"#8B5E3C","dots":["#fff6e0","#ffe8bf","#ffd89e","#ffc27a","#8b5e3c"]},
-              {"style":"朋克","snake":"#8B1D78","dots":["#f7dbe9","#efb6d6","#e887c6","#dd4aa9","#8b1d78"]},
-              {"style":"复古","snake":"#6A2C91","dots":["#f1e6fb","#e0c9f5","#ccaef0","#b08ae8","#6a2c91"]}
+              {"style":"清新","snake":"#00897B","dots":["#B2DFDB","#80CBC4","#4DB6AC","#26A69A","#00897B"]},
+              {"style":"夕阳","snake":"#E64A19","dots":["#FFCCBC","#FFAB91","#FF8A65","#FF7043","#E64A19"]},
+              {"style":"怀旧","snake":"#6D4C41","dots":["#D7CCC8","#BCAAA4","#A1887F","#8D6E63","#6D4C41"]},
+              {"style":"未来","snake":"#1976D2","dots":["#BBDEFB","#90CAF9","#64B5F6","#42A5F5","#1976D2"]},
+              {"style":"金秋","snake":"#F57C00","dots":["#FFE0B2","#FFCC80","#FFB74D","#FFA726","#F57C00"]},
+              {"style":"朋克","snake":"#C2185B","dots":["#F8BBD0","#F48FB1","#F06292","#EC407A","#C2185B"]},
+              {"style":"复古","snake":"#7B1FA2","dots":["#E1BEE7","#CE93D8","#BA68C8","#AB47BC","#7B1FA2"]}
             ]
+
         run: |
           import os, json
           from datetime import datetime
           from zoneinfo import ZoneInfo
 
-          now_cst = datetime.now(ZoneInfo('America/Chicago'))
-          py_weekday = now_cst.weekday()
+          now_china = datetime.now(ZoneInfo('Asia/Shanghai'))
+          py_weekday = now_china.weekday()
           sun_idx = (py_weekday + 1) % 7
 
           light = json.loads(os.environ['LIGHT_SCHEMAS'])
