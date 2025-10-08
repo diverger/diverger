@@ -46,25 +46,24 @@ jobs:
           MANUAL_STYLE: ${{ github.event.inputs.style || 'auto' }}
           LIGHT_SCHEMAS: |
             [
-              {"style":"海洋","snake":"#0097A7","dots":["#E0F7FA","#B2EBF2","#80DEEA","#4DD0E1","#26C6DA"]},
-              {"style":"火焰","snake":"#F4511E","dots":["#FBE9E7","#FFCCBC","#FFAB91","#FF8A65","#FF7043"]},
-              {"style":"森林","snake":"#689F38","dots":["#F1F8E9","#DCEDC8","#C5E1A5","#AED581","#9CCC65"]},
-              {"style":"科技","snake":"#5E35B1","dots":["#EDE7F6","#D1C4E9","#B39DDB","#9575CD","#7E57C2"]},
-              {"style":"晨曦","snake":"#FFA000","dots":["#FFF8E1","#FFECB3","#FFE082","#FFD54F","#FFCA28"]},
-              {"style":"樱花","snake":"#EC407A","dots":["#FCE4EC","#F8BBD0","#F48FB1","#F06292","#EC407A"]},
-              {"style":"暮色","snake":"#5D4037","dots":["#EFEBE9","#D7CCC8","#BCAAA4","#A1887F","#8D6E63"]}
+              {"style":"海洋","snake":"#0277BD","dots":["#ebedf0","#81D4FA","#4FC3F7","#29B6F6","#039BE5"]},
+              {"style":"火焰","snake":"#E64A19","dots":["#ebedf0","#FFAB91","#FF8A65","#FF7043","#FF5722"]},
+              {"style":"森林","snake":"#28a745","dots":["#ebedf0","#9be9a8","#40c463","#30a14e","#216e39"]},
+              {"style":"科技","snake":"#5E35B1","dots":["#ebedf0","#B39DDB","#9575CD","#7E57C2","#673AB7"]},
+              {"style":"晨曦","snake":"#F57C00","dots":["#ebedf0","#FFD54F","#FFCA28","#FFA000","#FF8F00"]},
+              {"style":"樱花","snake":"#D81B60","dots":["#ebedf0","#F48FB1","#F06292","#EC407A","#E91E63"]},
+              {"style":"暮色","snake":"#5D4037","dots":["#ebedf0","#BCAAA4","#A1887F","#8D6E63","#6D4C41"]}
             ]
           DARK_SCHEMAS: |
             [
-              {"style":"深海","snake":"#006064","dots":["#151b23","#005A63","#006D76","#00838F","#17A1A8"]},
-              {"style":"熔岩","snake":"#BF360C","dots":["#151b23","#7A2A14","#9A3415","#B73C15","#D84315"]},
+              {"style":"深海","snake":"#00BCD4","dots":["#151b23","#004D56","#006B75","#00897B","#26C6DA"]},
+              {"style":"熔岩","snake":"#FF6E40","dots":["#151b23","#5D1F0C","#8D2F10","#D84315","#FF7043"]},
               {"style":"丛林","snake":"#3FB950","dots":["#151b23","#033A16","#196C2E","#2EA043","#56D364"]},
-              {"style":"赛博","snake":"#512DA8","dots":["#151b23","#3A2B78","#4A3690","#5B40A6","#6A48B9"]},
-              {"style":"琥珀","snake":"#FF6F00","dots":["#151b23","#8C5400","#A66400","#C97800","#FF8F00"]},
-              {"style":"玫瑰","snake":"#880E4F","dots":["#151b23","#6E1A42","#7F1E4C","#931C55","#AD1457"]},
-              {"style":"咖啡","snake":"#3E2723","dots":["#151b23","#3A2A26","#44312C","#4D382F","#5D4037"]}
+              {"style":"赛博","snake":"#7C4DFF","dots":["#151b23","#311B92","#4527A0","#5E35B1","#9575CD"]},
+              {"style":"琥珀","snake":"#FFB74D","dots":["#151b23","#E65100","#F57C00","#FF9800","#FFCA28"]},
+              {"style":"玫瑰","snake":"#F06292","dots":["#151b23","#4A1229","#880E4F","#C2185B","#EC407A"]},
+              {"style":"咖啡","snake":"#8D6E63","dots":["#151b23","#321911","#4E342E","#6D4C41","#A1887F"]}
             ]
-
         run: |
           import os, json
           from datetime import datetime
