@@ -46,13 +46,13 @@ jobs:
           MANUAL_STYLE: ${{ github.event.inputs.style || 'auto' }}
           LIGHT_SCHEMAS: |
             [
-              {"style":"海洋","snake":"#0277BD","dots":["#ebedf0","#81D4FA","#4FC3F7","#29B6F6","#039BE5"]},
-              {"style":"火焰","snake":"#E64A19","dots":["#ebedf0","#FFAB91","#FF8A65","#FF7043","#FF5722"]},
-              {"style":"森林","snake":"#28a745","dots":["#ebedf0","#9be9a8","#40c463","#30a14e","#216e39"]},
-              {"style":"科技","snake":"#5E35B1","dots":["#ebedf0","#B39DDB","#9575CD","#7E57C2","#673AB7"]},
-              {"style":"晨曦","snake":"#F57C00","dots":["#ebedf0","#FFD54F","#FFCA28","#FFA000","#FF8F00"]},
-              {"style":"樱花","snake":"#D81B60","dots":["#ebedf0","#F48FB1","#F06292","#EC407A","#E91E63"]},
-              {"style":"暮色","snake":"#5D4037","dots":["#ebedf0","#BCAAA4","#A1887F","#8D6E63","#6D4C41"]}
+              {"style":"海洋","snake":"#0277BD","dots":["#E1F5FE","#81D4FA","#4FC3F7","#29B6F6","#039BE5"]},
+              {"style":"火焰","snake":"#E64A19","dots":["#FBE9E7","#FFAB91","#FF8A65","#FF7043","#FF5722"]},
+              {"style":"森林","snake":"#28a745","dots":["#E8F5E9","#9be9a8","#40c463","#30a14e","#216e39"]},
+              {"style":"科技","snake":"#5E35B1","dots":["#EDE7F6","#B39DDB","#9575CD","#7E57C2","#673AB7"]},
+              {"style":"晨曦","snake":"#F57C00","dots":["#FFF8E1","#FFD54F","#FFCA28","#FFA000","#FF8F00"]},
+              {"style":"樱花","snake":"#D81B60","dots":["#FCE4EC","#F48FB1","#F06292","#EC407A","#E91E63"]},
+              {"style":"暮色","snake":"#5D4037","dots":["#EFEBE9","#BCAAA4","#A1887F","#8D6E63","#6D4C41"]}
             ]
           DARK_SCHEMAS: |
             [
