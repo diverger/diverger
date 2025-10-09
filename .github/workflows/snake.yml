@@ -22,9 +22,41 @@ on:
           - 'manual'
         default: 'auto-hour'
       style:
-        description: 'Manual color style (only used when mode is manual, 0-6 for weekday or 0-23 for hour)'
+        description: 'Manual color style (仅在手动模式下使用，选择 day 或 hour 的具体样式)'
         required: false
-        type: string
+        type: choice
+        options:
+          - day1-海洋-深海
+          - day2-火焰-熔岩
+          - day3-森林-丛林
+          - day4-科技-赛博
+          - day5-晨曦-琥珀
+          - day6-樱花-玫瑰
+          - day7-暮色-咖啡
+          - hour1-深夜紫
+          - hour2-午夜蓝
+          - hour3-寂静靛
+          - hour4-凌晨灰
+          - hour5-黎明粉
+          - hour6-晨曦橙
+          - hour7-日出金
+          - hour8-清晨黄
+          - hour9-上午绿
+          - hour10-活力青
+          - hour11-正午蓝
+          - hour12-天空青
+          - hour13-午后蓝
+          - hour14-温暖橙
+          - hour15-夕阳红
+          - hour16-黄昏紫
+          - hour17-暮色玫
+          - hour18-傍晚紫
+          - hour19-入夜靛
+          - hour20-夜幕蓝
+          - hour21-深夜青
+          - hour22-午夜紫
+          - hour23-子夜墨
+          - hour24-静夜灰
         default: ''
 
   # run on every push on the master branch
@@ -134,16 +166,19 @@ jobs:
 
           # Determine which mode to use
           if mode == 'manual' and manual_style:
-              # Manual mode: user specifies the index
-              idx = int(manual_style)
-              # Determine if it's day or hour based on the index range
-              if idx < 7:
+              # Manual mode: user specifies the style string, e.g. day1-海洋-深海 or hour1-深夜紫
+              if manual_style.startswith('day'):
+                  # dayN-xxx-yyy
+                  idx = int(manual_style[3:].split('-')[0]) - 1  # day1 -> 0
                   light = json.loads(os.environ['LIGHT_SCHEMAS_DAY'])
                   dark = json.loads(os.environ['DARK_SCHEMAS_DAY'])
-              else:
+              elif manual_style.startswith('hour'):
+                  # hourN-xxx
+                  idx = int(manual_style[4:].split('-')[0]) - 1  # hour1 -> 0
                   light = json.loads(os.environ['LIGHT_SCHEMAS_HOUR'])
                   dark = json.loads(os.environ['DARK_SCHEMAS_HOUR'])
-                  idx = idx % 24  # Ensure it's in the valid range
+              else:
+                  raise ValueError('Invalid style format, must start with day or hour')
           elif mode == 'auto-hour':
               # Hour mode: 24 color schemes based on hour
               idx = now_china.hour  # 0-23
