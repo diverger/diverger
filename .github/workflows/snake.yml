@@ -1,5 +1,8 @@
 name: generate animation
 
+env:
+  DEFAULT_MODE: 'auto-hour'
+
 on:
   # run automatically every 24 hours
   schedule:
@@ -17,7 +20,7 @@ on:
           - 'auto-day'
           - 'auto-hour'
           - 'manual'
-        default: 'auto-day'
+        default: 'auto-hour'
       style:
         description: 'Manual color style (only used when mode is manual, 0-6 for weekday or 0-23 for hour)'
         required: false
@@ -44,7 +47,7 @@ jobs:
         id: colors
         shell: python
         env:
-          MODE: ${{ github.event.inputs.mode || 'auto-day' }}
+          MODE: ${{ github.event.inputs.mode || env.DEFAULT_MODE }}
           MANUAL_STYLE: ${{ github.event.inputs.style || '' }}
           LIGHT_SCHEMAS_DAY: |
             [
@@ -125,7 +128,7 @@ jobs:
           from datetime import datetime
           from zoneinfo import ZoneInfo
 
-          mode = os.environ.get('MODE', 'auto-day')
+          mode = os.environ.get('MODE', 'auto-hour')
           manual_style = os.environ.get('MANUAL_STYLE', '')
           now_china = datetime.now(ZoneInfo('Asia/Shanghai'))
 
