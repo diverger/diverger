@@ -19,9 +19,9 @@ Here are some ideas to get you started:
 <div style="display: flex; justify-content:center;  align-items: flex-start; width: 100%;">
     <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-streak-stats-private-beryl.vercel.app/api?user=diverger&theme=transparent&hide_border=true&short_numbers=false&card_width=640&card_height=140&fire=EB5454&ring=FFFFFF&sideNums=FFFFFF&sideLabels=FFFFFF&dates=BCBCBC&excludeDaysLabel=BCBCBC&currStreakNum=FFFFAF&currStreakLabel=FFFFAF" style="margin: 0;" />
-        <source media="(prefers-color-scheme: light)" srcset="https://github-readme-streak-stats-private-beryl.vercel.app/api?user=diverger&theme=transparent&hide_border=true&short_numbers=false&card_width=640&card_height=140&fire=000000&ring=000000&sideNums=000000&sideLabels=000000&dates=000000&excludeDaysLabel=000000&currStreakNum=F05237&currStreakLabel=F05237" style="margin: 0;" />
-        <img height="auto" src="https://github-readme-streak-stats-private-beryl.vercel.app/api?user=diverger&theme=transparent&hide_border=true&short_numbers=false&card_width=640&card_height=140&fire=EB5454" alt="Streak stats" style="margin: 0;"/>
+        <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-streak-stats-private-beryl.vercel.app/api?user=diverger&theme=transparent&hide_border=true&short_numbers=false&fire=EB5454&ring=FFFFFF&sideNums=FFFFFF&sideLabels=FFFFFF&dates=BCBCBC&excludeDaysLabel=BCBCBC&currStreakNum=FFFFAF&currStreakLabel=FFFFAF" style="margin: 0;" />
+        <source media="(prefers-color-scheme: light)" srcset="https://github-readme-streak-stats-private-beryl.vercel.app/api?user=diverger&theme=transparent&hide_border=true&short_numbers=false&fire=000000&ring=000000&sideNums=000000&sideLabels=000000&dates=000000&excludeDaysLabel=000000&currStreakNum=F05237&currStreakLabel=F05237" style="margin: 0;" />
+        <img height="auto" src="https://github-readme-streak-stats-private-beryl.vercel.app/api?user=diverger&theme=transparent&hide_border=true&short_numbers=false&fire=EB5454" alt="Streak stats" style="margin: 0;"/>
     </picture>
     </p>
 </div>
