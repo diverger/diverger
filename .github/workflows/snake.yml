@@ -233,6 +233,8 @@ jobs:
                 "position": "follow",
                 "prefix": "{img:0} ",
                 "suffix": "",
+                "showCount": false,
+                "showPercentage": false,
                 "fontSize": 14,
                 "images": [
                   {
