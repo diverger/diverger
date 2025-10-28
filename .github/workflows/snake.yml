@@ -207,7 +207,7 @@ jobs:
                   f.write(f"dark_dots={dark_dots}\n")
 
       - name: Generate GitHub Contributions Snake Animations
-        uses: Platane/snk@v3
+        uses: diverger/gh-magic-matrix/snake@main
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
