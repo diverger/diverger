@@ -208,10 +208,10 @@ jobs:
 
       - name: Generate GitHub Contributions Snake Animations
         uses: diverger/gh-magic-matrix/snake@v1
-        env:
-          INPUT_SHOW_CONTRIBUTION_COUNTER: "true"
-          INPUT_COUNTER_DEBUG: "false"
-          INPUT_COUNTER_DISPLAYS: |
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          show_contribution_counter: "true"
+          counter_displays: |
             [
               {
                 "position": "top-left",
@@ -220,17 +220,15 @@ jobs:
                 "fontSize": 14,
                 "fontWeight": "bold"
               },
-
               {
                 "position": "top-right",
                 "prefix": "",
-                "suffix": "killed",
+                "suffix": " killed",
                 "showCount": true,
                 "showPercentage": false,
                 "color": "#bf3989",
-                "fontStyle": "italic
+                "fontStyle": "italic"
               },
-
               {
                 "position": "follow",
                 "prefix": "{img:0} ",
@@ -259,8 +257,6 @@ jobs:
                 ]
               }
             ]
-        with:
-          github_user_name: ${{ github.repository_owner }}
           outputs: |
             dist/github-snake-dark.svg?color_snake=${{ steps.colors.outputs.dark_color }}&color_dots=${{ steps.colors.outputs.dark_dots }}
             dist/github-snake.svg?color_snake=${{ steps.colors.outputs.light_color }}&color_dots=${{ steps.colors.outputs.light_dots }}
