@@ -215,7 +215,7 @@ jobs:
             [
               {
                 "position": "top-left",
-                "text": "(c)diverger",
+                "text": "©diverger",
                 "color": "#1f883d",
                 "fontSize": 14,
                 "fontWeight": "bold"
