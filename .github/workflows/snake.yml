@@ -1,7 +1,7 @@
 name: generate animation
 
 env:
-  DEFAULT_MODE: 'auto-hour'
+  DEFAULT_MODE: "auto-hour"
 
 on:
   # run automatically every 24 hours
@@ -13,16 +13,16 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Color change mode'
+        description: "Color change mode"
         required: false
         type: choice
         options:
-          - 'auto-day'
-          - 'auto-hour'
-          - 'manual'
-        default: 'auto-hour'
+          - "auto-day"
+          - "auto-hour"
+          - "manual"
+        default: "auto-hour"
       style:
-        description: 'Manual color style (仅在手动模式下使用，选择 day 或 hour 的具体样式)'
+        description: "Manual color style (仅在手动模式下使用，选择 day 或 hour 的具体样式)"
         required: false
         type: choice
         options:
@@ -57,12 +57,12 @@ on:
           - hour22-午夜紫
           - hour23-子夜墨
           - hour24-静夜灰
-        default: ''
+        default: ""
 
   # run on every push on the master branch
   push:
     branches:
-    - master
+      - master
 
 jobs:
   generate:
@@ -208,6 +208,57 @@ jobs:
 
       - name: Generate GitHub Contributions Snake Animations
         uses: diverger/gh-magic-matrix/snake@v1
+        env:
+          INPUT_SHOW_CONTRIBUTION_COUNTER: "true"
+          INPUT_COUNTER_DEBUG: "true"
+          INPUT_COUNTER_DISPLAYS: |
+            [
+              {
+                "position": "top-left",
+                "text": "(c)diverger",
+                "color": "#1f883d",
+                "fontSize": 14,
+                "fontWeight": "bold"
+              },
+
+              {
+                "position": "top-right",
+                "prefix": "",
+                "suffix": "killed",
+                "showCount": true,
+                "showPercentage": false,
+                "color": "#bf3989",
+                "fontStyle": "italic
+              },
+
+              {
+                "position": "follow",
+                "prefix": "{img:0} ",
+                "suffix": "",
+                "fontSize": 14,
+                "images": [
+                  {
+                    "urlFolder": ".github/assets",
+                    "framePattern": "Lx.png",
+                    "width": 64,
+                    "height": 86,
+                    "anchorY": 0.6875,
+                    "anchorX": 0.3,
+                    "textAnchorY": 1.0,
+                    "spacing": 0,
+                    "sprite": {
+                      "mode": "contribution-level",
+                      "contributionLevels": 5,
+                      "framesPerLevel": 8,
+                      "frameWidth": 48,
+                      "frameHeight": 64,
+                      "layout": "horizontal",
+                      "useSpriteSheetPerLevel": true
+                    }
+                  }
+                ]
+              }
+            ]
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
