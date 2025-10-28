@@ -210,7 +210,7 @@ jobs:
         uses: diverger/gh-magic-matrix/snake@v1
         env:
           INPUT_SHOW_CONTRIBUTION_COUNTER: "true"
-          INPUT_COUNTER_DEBUG: "true"
+          INPUT_COUNTER_DEBUG: "false"
           INPUT_COUNTER_DISPLAYS: |
             [
               {
