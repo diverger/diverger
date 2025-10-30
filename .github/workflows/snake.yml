@@ -92,7 +92,7 @@ jobs:
         id: holiday
         env:
           GITHUB_USERNAME: ${{ github.repository_owner }}
-        run: python .github/scripts/detect_github_holiday_colors_v2.py
+        run: python .github/scripts/detect_github_holiday_colors.py
 
       - name: Set color scheme by China time
         id: colors

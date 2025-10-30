@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """
-GitHub Holiday Color Scheme Detector (Screenshot-based)
+GitHub Holiday Color Scheme Detector (Multi-method)
 
-Detects GitHub's holiday color scheme using screenshot analysis and date-based detection.
+Detects GitHub's holiday color scheme using:
+1. Live DOM color extraction (Primer CSS detection)
+2. HTML message detection
+3. Date-based fallback
 """
 
 import os
@@ -12,96 +15,199 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 
-def capture_and_extract_colors(username):
+# Primer CSS Default Colors (Fallback)
+PRIMER_COLORS = {
+    'light': {
+        'level0': '#ebedf0',
+        'level1': '#9be9a8',
+        'level2': '#40c463',
+        'level3': '#30a14e',
+        'level4': '#216e39'
+    },
+    'dark': {
+        'level0': '#161b22',
+        'level1': '#0e4429',
+        'level2': '#006d32',
+        'level3': '#26a641',
+        'level4': '#39d353'
+    }
+}
+
+
+def extract_colors_from_dom(username):
     """
-    Capture screenshot of contribution graph and extract colors.
-    Returns list of hex colors or None if failed.
+    Extract actual colors from GitHub contribution calendar DOM.
+    Uses regex to find data-level elements and their computed colors.
+    Returns dict with colors or None if failed.
     """
     try:
-        from playwright.sync_api import sync_playwright
-        from PIL import Image
-        from collections import Counter
-    except ImportError:
-        print("Playwright/Pillow not available, skipping screenshot method")
+        import urllib.request
+        import re
+
+        url = f'https://github.com/{username}'
+        print(f"Fetching DOM from {url}...")
+
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=10) as response:
+            html = response.read().decode('utf-8')
+
+        # Extract all contribution calendar day elements with their fill colors
+        # Pattern: <rect ... data-level="X" ... fill="COLOR" or style="fill:COLOR"
+        patterns = [
+            r'data-level="(\d)"[^>]*fill="([#\w]+)"',
+            r'data-level="(\d)"[^>]*style="[^"]*fill:\s*([#\w]+)',
+            r'fill="([#\w]+)"[^>]*data-level="(\d)"',
+        ]
+
+        level_colors = {}
+        for pattern in patterns:
+            matches = re.findall(pattern, html, re.IGNORECASE)
+            for match in matches:
+                if len(match) == 2:
+                    # Normalize order (some patterns capture level first, some second)
+                    if match[0].isdigit():
+                        level, color = match
+                    else:
+                        color, level = match
+
+                    level = int(level)
+                    if level not in level_colors and color.startswith('#'):
+                        level_colors[level] = color.lower()
+
+        if len(level_colors) >= 4:  # Need at least 4 levels to be valid
+            print(f"✓ Extracted {len(level_colors)} color levels from DOM")
+            print(f"  Colors: {level_colors}")
+            return level_colors
+
+        print("✗ Could not extract enough color levels from DOM")
         return None
-
-    try:
-        print("Attempting screenshot-based color extraction...")
-
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            page = browser.new_page(viewport={'width': 1920, 'height': 1080})
-
-            url = f'https://github.com/{username}'
-            page.goto(url, wait_until='networkidle', timeout=30000)
-            page.wait_for_selector('.js-yearly-contributions', timeout=10000)
-
-            # Screenshot the contribution area
-            contribution_element = page.locator('.js-yearly-contributions')
-            screenshot_path = 'temp_contribution_graph.png'
-            contribution_element.screenshot(path=screenshot_path)
-
-            browser.close()
-
-            # Extract colors from screenshot
-            img = Image.open(screenshot_path)
-            if img.mode != 'RGB':
-                img = img.convert('RGB')
-
-            pixels = list(img.getdata())
-            color_counts = Counter(pixels)
-
-            # Filter out backgrounds (white and very dark)
-            filtered_colors = {
-                color: count for color, count in color_counts.items()
-                if not (color[0] > 240 and color[1] > 240 and color[2] > 240)
-                and not (color[0] < 20 and color[1] < 20 and color[2] < 20)
-            }
-
-            # Get top 10 colors
-            most_common = sorted(filtered_colors.items(), key=lambda x: x[1], reverse=True)[:10]
-
-            hex_colors = [f'#{r:02X}{g:02X}{b:02X}' for (r, g, b), _ in most_common]
-
-            print(f"✓ Extracted {len(hex_colors)} colors via screenshot: {hex_colors[:5]}")
-
-            # Clean up
-            import os
-            if os.path.exists(screenshot_path):
-                os.remove(screenshot_path)
-
-            return hex_colors
 
     except Exception as e:
-        print(f"Screenshot method failed: {e}")
+        print(f"DOM extraction failed: {e}")
         return None
 
 
-def is_orange_ish(hex_color):
-    """Check if color is orange-ish."""
-    rgb = tuple(int(hex_color[i:i+2], 16) for i in (1, 3, 5))
-    r, g, b = rgb
-    return r > 200 and g > 100 and g < r and b < g
+def analyze_colors_for_theme(colors):
+    """
+    Analyze extracted colors to detect which holiday theme they match.
+    Returns theme name or None.
+    """
+    if not colors or len(colors) < 3:
+        return None
+
+    # Convert all colors to lowercase for comparison
+    color_values = [c.lower() for c in colors.values()]
+    color_str = ' '.join(color_values)
+
+    # Halloween: Orange tones (#fb8500, #d47100, #bc4c00, #953800)
+    halloween_markers = ['fb85', 'd471', 'bc4c', 'f60', 'fa0']
+    if any(marker in color_str for marker in halloween_markers):
+        print("✓ Color analysis: Detected Halloween theme (orange tones)")
+        return 'halloween'
+
+    # Christmas: Mix of red and green
+    has_red = any(c in color_str for c in ['cf22', 'a40e', 'cf2', 'd41'])
+    has_green = any(c in color_str for c in ['1a7f', '1163', '0a6', '0d4'])
+    if has_red and has_green:
+        print("✓ Color analysis: Detected Christmas theme (red & green)")
+        return 'christmas'
+
+    # Pink/Purple themes (Valentine's, Pride, Lunar New Year)
+    has_pink = any(c in color_str for c in ['bf39', 'bf3', 'ea4a'])
+    has_purple = any(c in color_str for c in ['8250', '622c', '845'])
+
+    if has_pink or has_purple:
+        month = datetime.now(ZoneInfo('UTC')).month
+        if month == 2:
+            print("✓ Color analysis: Detected Valentine's theme (pink/purple in Feb)")
+            return 'valentines'
+        elif month in (1, 2):
+            print("✓ Color analysis: Detected Lunar New Year theme (pink/purple in Jan/Feb)")
+            return 'lunar_new_year'
+        elif month == 6:
+            print("✓ Color analysis: Detected Pride theme (rainbow colors in June)")
+            return 'pride'
+
+    print("✗ Colors don't match known holiday themes")
+    return None
 
 
-def is_red_ish(hex_color):
-    """Check if color is red-ish."""
-    rgb = tuple(int(hex_color[i:i+2], 16) for i in (1, 3, 5))
-    r, g, b = rgb
-    return r > 150 and r > g * 1.5 and r > b * 1.5
+def detect_holiday_from_html(username):
+    """
+    Fetch GitHub profile HTML and look for holiday messages or color attributes.
+    Returns holiday name or None.
+    """
+    try:
+        import urllib.request
+        import re
 
+        url = f'https://github.com/{username}'
+        print(f"Fetching HTML from {url}...")
 
-def is_green_ish(hex_color):
-    """Check if color is green-ish."""
-    rgb = tuple(int(hex_color[i:i+2], 16) for i in (1, 3, 5))
-    r, g, b = rgb
-    return g > 150 and g > r * 1.3 and g > b
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=10) as response:
+            html = response.read().decode('utf-8')
 
+        # Method 1: Look for holiday messages in HTML
+        holiday_patterns = {
+            'halloween': ['Happy Halloween!', 'halloween'],
+            'christmas': ['Happy Holidays!', 'Merry Christmas!', 'Season\'s Greetings'],
+            'lunar_new_year': ['Happy Lunar New Year!', 'Lunar New Year'],
+            'valentines': ['Happy Valentine\'s Day!', 'Valentine\'s Day', 'valentine'],
+            'pride': ['Happy Pride!', 'Pride Month']
+        }
 
-def is_dark_color(hex_color):
-    """Check if color is dark."""
-    rgb = tuple(int(hex_color[i:i+2], 16) for i in (1, 3, 5))
-    return sum(rgb) < 150
+        html_lower = html.lower()
+
+        for holiday, patterns in holiday_patterns.items():
+            for pattern in patterns:
+                if pattern.lower() in html_lower:
+                    print(f"✓ Found '{pattern}' in HTML")
+                    return holiday
+
+        # Method 2: Look for data-level attributes with non-standard colors
+        # GitHub dynamically injects holiday colors via data attributes
+        level_elements = re.findall(r'data-level="[0-4]"[^>]*style="[^"]*background-color:\s*([#a-fA-F0-9]{6,7})', html)
+
+        if level_elements:
+            colors = set(level_elements[:20])  # Get first 20 unique colors
+            print(f"Found {len(colors)} contribution colors: {list(colors)[:5]}")
+
+            # Analyze colors to detect holiday
+            colors_lower = [c.lower() for c in colors]
+
+            # Halloween: orange tones (fb, d4, bc, 95, 76)
+            if any(c.startswith('#fb') or c.startswith('#d4') or c.startswith('#bc') for c in colors_lower):
+                if any('8500' in c or '7100' in c or '4c00' in c for c in colors_lower):
+                    print("✓ Detected Halloween colors (orange tones)")
+                    return 'halloween'
+
+            # Valentine's/Pride: pink/purple (bf, 82, 62)
+            if any(c.startswith('#bf') or c.startswith('#82') or c.startswith('#62') for c in colors_lower):
+                if any('3989' in c or '50df' in c or '2cbc' in c for c in colors_lower):
+                    # Check date to distinguish valentine vs pride
+                    from datetime import datetime
+                    month = datetime.now().month
+                    if month == 2:
+                        print("✓ Detected Valentine's colors (pink/purple)")
+                        return 'valentines'
+                    elif month == 6:
+                        print("✓ Detected Pride colors (rainbow)")
+                        return 'pride'
+
+            # Christmas: red and green mix
+            has_red = any(c.startswith('#cf') or c.startswith('#a4') for c in colors_lower)
+            has_green = any(c.startswith('#1a') or c.startswith('#11') for c in colors_lower)
+            if has_red and has_green:
+                print("✓ Detected Christmas colors (red & green)")
+                return 'christmas'
+
+        print("✗ No holiday theme detected in HTML")
+        return None
+
+    except Exception as e:
+        print(f"HTML fetch failed: {e}")
+        return None
 
 
 def check_holiday_by_date(current_date=None):
@@ -132,6 +238,11 @@ def check_holiday_by_date(current_date=None):
             'end': (2, 20),
             'description': 'Lunar New Year'
         },
+        'valentines': {
+            'start': (2, 10),
+            'end': (2, 14),
+            'description': 'Valentine\'s Day'
+        },
         'pride': {
             'start': (6, 1),
             'end': (6, 30),
@@ -155,64 +266,47 @@ def check_holiday_by_date(current_date=None):
 
 
 def create_theme_from_name(theme_name):
-    """Create predefined color theme from holiday name."""
+    """Create predefined color theme from holiday name using GitHub Primer colors."""
     themes = {
         'halloween': {
-            'light_color': '#FFD700',
-            'dark_color': '#FFA500',
-            'light_dots': '#FFD700, #FFA500, #FF8C00, #FF6347, #8B4513',
-            'dark_dots': '#FF4500, #FF7F00, #FFA07A, #CD5C5C, #8B0000',
-            'description': 'Halloween Theme (Orange & Black)'
+            'light_color': '#fb8500',
+            'dark_color': '#d47100',
+            'light_dots': '#fb8500, #d47100, #bc4c00, #953800, #762d0a',
+            'dark_dots': '#d47100, #bc4c00, #953800, #762d0a, #5a1e02',
+            'description': 'Halloween Theme (Orange)'
         },
         'christmas': {
-            'light_color': '#FF0000',
-            'dark_color': '#00FF00',
-            'light_dots': '#FF0000, #DC143C, #FFD700, #00FF00, #228B22',
-            'dark_dots': '#8B0000, #B22222, #FFD700, #006400, #2E8B57',
-            'description': 'Christmas Theme (Red & Green)'
+            'light_color': '#1a7f37',
+            'dark_color': '#cf222e',
+            'light_dots': '#1a7f37, #116329, #0969da, #0550ae, #cf222e',
+            'dark_dots': '#116329, #0550ae, #0969da, #8250df, #a40e26',
+            'description': 'Christmas Theme (Green & Red)'
         },
         'lunar_new_year': {
-            'light_color': '#FFD700',
-            'dark_color': '#FF0000',
-            'light_dots': '#FFD700, #FFA500, #FF0000, #DC143C, #FF6347',
-            'dark_dots': '#B8860B, #FF8C00, #8B0000, #B22222, #CD5C5C',
-            'description': 'Lunar New Year (Gold & Red)'
+            'light_color': '#bf3989',
+            'dark_color': '#cf222e',
+            'light_dots': '#bf3989, #8250df, #cf222e, #a40e26, #82071e',
+            'dark_dots': '#8250df, #a40e26, #82071e, #6e011a, #540719',
+            'description': 'Lunar New Year (Pink & Red)'
+        },
+        'valentines': {
+            'light_color': '#bf3989',
+            'dark_color': '#8250df',
+            'light_dots': '#bf3989, #8250df, #cf222e, #fb8500, #a40e26',
+            'dark_dots': '#8250df, #a40e26, #82071e, #6e011a, #622cbc',
+            'description': 'Valentine\'s Day (Pink & Purple)'
         },
         'pride': {
-            'light_color': '#FF0000',
-            'dark_color': '#800080',
-            'light_dots': '#FF0000, #FFA500, #FFFF00, #008000, #0000FF',
-            'dark_dots': '#8B0000, #FF8C00, #9ACD32, #006400, #00008B',
+            'light_color': '#0969da',
+            'dark_color': '#8250df',
+            'light_dots': '#cf222e, #fb8500, #d4a72c, #1a7f37, #0969da',
+            'dark_dots': '#a40e26, #d47100, #9a6700, #116329, #622cbc',
             'description': 'Pride Month (Rainbow)'
         },
     }
 
     return themes.get(theme_name)
 
-
-def detect_holiday_theme(colors):
-    """
-    Analyze extracted colors to detect holiday theme.
-    Returns dict with theme info or None.
-    """
-    if not colors or len(colors) < 3:
-        return None
-
-    # Halloween detection: orange + dark colors
-    has_orange = any(is_orange_ish(c) for c in colors)
-    has_dark = any(is_dark_color(c) for c in colors)
-
-    if has_orange and has_dark:
-        return 'halloween'
-
-    # Christmas detection: red + green
-    has_red = any(is_red_ish(c) for c in colors)
-    has_green = any(is_green_ish(c) for c in colors)
-
-    if has_red and has_green:
-        return 'christmas'
-
-    return None
 
 
 def output_result(result):
@@ -239,15 +333,17 @@ def main():
         username = sys.argv[1]
 
     print(f"Detecting holiday theme for GitHub user: {username}")
+    print(f"Timestamp: {datetime.now(ZoneInfo('UTC')).isoformat()}")
 
-    # Method 1: Try screenshot-based extraction
-    print("\n=== Method 1: Screenshot-based color extraction ===")
-    colors = capture_and_extract_colors(username)
+    # Method 1: Extract live colors from DOM (most accurate)
+    print("\n=== Method 1: Live DOM color extraction ===")
+    dom_colors = extract_colors_from_dom(username)
 
-    if colors:
-        theme_name = detect_holiday_theme(colors)
+    if dom_colors:
+        # Analyze extracted colors to detect theme
+        theme_name = analyze_colors_for_theme(dom_colors)
         if theme_name:
-            print(f"✓ Detected {theme_name} theme from screenshot!")
+            print(f"✓ Detected {theme_name} theme from live colors")
             theme = create_theme_from_name(theme_name)
             if theme:
                 result = {
@@ -258,13 +354,35 @@ def main():
                     'dark_color': theme['dark_color'],
                     'light_dots': theme['light_dots'],
                     'dark_dots': theme['dark_dots'],
-                    'detection_method': 'screenshot'
+                    'detection_method': 'dom-colors',
+                    'extracted_colors': str(dom_colors)
                 }
                 output_result(result)
                 return
 
-    # Method 2: Date-based detection as fallback
-    print("\n=== Method 2: Date-based holiday detection ===")
+    # Method 2: Check HTML for holiday messages
+    print("\n=== Method 2: HTML message detection ===")
+    holiday_name = detect_holiday_from_html(username)
+
+    if holiday_name:
+        print(f"✓ Detected {holiday_name} from HTML message")
+        theme = create_theme_from_name(holiday_name)
+        if theme:
+            result = {
+                'holiday_detected': True,
+                'theme_name': holiday_name,
+                'theme_description': theme['description'],
+                'light_color': theme['light_color'],
+                'dark_color': theme['dark_color'],
+                'light_dots': theme['light_dots'],
+                'dark_dots': theme['dark_dots'],
+                'detection_method': 'html-message'
+            }
+            output_result(result)
+            return
+
+    # Method 3: Date-based detection as fallback
+    print("\n=== Method 3: Date-based holiday detection ===")
     holiday_name = check_holiday_by_date()
 
     if holiday_name:
