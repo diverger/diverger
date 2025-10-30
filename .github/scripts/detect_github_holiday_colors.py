@@ -28,87 +28,213 @@ def fetch_github_profile(username):
     """Fetch GitHub profile page to analyze contribution graph colors."""
     url = f"https://github.com/{username}"
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Connection': 'keep-alive',
     }
 
     try:
-        response = requests.get(url, headers=headers, timeout=10)
+        response = requests.get(url, headers=headers, timeout=15)
         response.raise_for_status()
+        print(f"Fetched {len(response.text)} bytes from GitHub profile")
         return response.text
     except Exception as e:
         print(f"Error fetching GitHub profile: {e}", file=sys.stderr)
         return None
 
 
-def extract_contribution_colors(html_content):
+def fetch_contribution_graph_data(username):
+    """Fetch contribution graph SVG directly from GitHub's graph API."""
+    # GitHub provides an SVG endpoint for the contribution graph
+    url = f"https://github.com/users/{username}/contributions"
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    }
+
+    try:
+        response = requests.get(url, headers=headers, timeout=15)
+        response.raise_for_status()
+        print(f"Fetched contribution graph: {len(response.text)} bytes")
+        return response.text
+    except Exception as e:
+        print(f"Error fetching contribution graph: {e}", file=sys.stderr)
+        return None
+
+
+def detect_holiday_message(html_content):
     """
-    Extract contribution graph colors from GitHub profile HTML.
-    Returns a dict with detected colors or None if using default colors.
+    Detect holiday message from GitHub contribution graph.
+    GitHub often displays messages like "Happy Halloween" during holidays.
+    Returns holiday name if detected, None otherwise.
     """
     if not html_content:
         return None
 
-    soup = BeautifulSoup(html_content, 'lxml')
+    # Convert to lowercase for case-insensitive matching
+    content_lower = html_content.lower()
+
+    # Define holiday message patterns
+    holiday_messages = {
+        'halloween': ['happy halloween', 'halloween', '🎃', 'trick or treat'],
+        'christmas': ['merry christmas', 'happy holidays', 'season\'s greetings', '🎄', '🎅'],
+        'lunar_new_year': ['happy lunar new year', 'happy new year', 'lunar new year', '🧧', '🐉'],
+        'valentines': ['happy valentine', 'valentine\'s day', '💝', '❤️'],
+        'pride': ['happy pride', 'pride month', '🏳️‍🌈'],
+        'thanksgiving': ['happy thanksgiving', 'thanksgiving', '🦃'],
+        'new_year': ['happy new year', '🎆', '🎊'],
+    }
+
+    print("\n=== Checking for holiday messages ===")
+    for holiday, patterns in holiday_messages.items():
+        for pattern in patterns:
+            if pattern in content_lower:
+                print(f"✓ Found holiday message: '{pattern}' -> {holiday}")
+                return holiday
+
+    print("No holiday message detected")
+    return None
+def extract_contribution_colors(html_content, is_graph_svg=False):
+    """
+    Extract contribution graph colors from GitHub profile HTML or SVG.
+    Returns a list of detected colors or None if using default colors.
+    """
+    if not html_content:
+        return None
+
+    soup = BeautifulSoup(html_content, 'html.parser')
 
     colors = set()
 
-    # Method 1: Find contribution graph SVG elements
-    contribution_cells = soup.find_all('rect', {'data-level': True})
+    # If this is the direct contribution graph SVG
+    if is_graph_svg:
+        # Extract all rect elements with fill colors
+        rects = soup.find_all('rect')
+        print(f"Found {len(rects)} rect elements in contribution graph")
 
-    if not contribution_cells:
-        # Try alternative selectors for contribution cells
-        contribution_cells = soup.select('[data-date]')
+        for rect in rects:
+            fill = rect.get('fill', '')
+            style = rect.get('style', '')
 
-    if not contribution_cells:
-        # Try finding any rect in svg with class containing "ContributionCalendar"
-        contribution_cells = soup.select('svg.js-calendar-graph-svg rect, svg.ContributionCalendar-day')
+            if fill and fill.startswith('#'):
+                colors.add(fill.upper())
+            elif 'fill:' in style:
+                color_match = re.search(r'fill:\s*(#[0-9a-fA-F]{6})', style)
+                if color_match:
+                    colors.add(color_match.group(1).upper())
 
-    print(f"Found {len(contribution_cells)} contribution cells")
+        # Also check for colors in class definitions
+        style_tags = soup.find_all('style')
+        for style_tag in style_tags:
+            if style_tag.string:
+                color_matches = re.findall(r'fill:\s*(#[0-9a-fA-F]{6})', style_tag.string)
+                colors.update([c.upper() for c in color_matches])
+    else:
+        # Extract from full profile page
+        # Method 1: Find contribution graph SVG elements
+        contribution_cells = soup.find_all('rect', {'data-level': True})
 
-    for cell in contribution_cells:
-        # Extract fill color from style or fill attribute
-        style = cell.get('style', '')
-        fill = cell.get('fill', '')
+        if not contribution_cells:
+            # Try alternative selectors for contribution cells
+            contribution_cells = soup.select('[data-date]')
 
-        if 'fill:' in style:
-            color_match = re.search(r'fill:\s*(#[0-9a-fA-F]{6})', style)
-            if color_match:
-                colors.add(color_match.group(1).upper())
-        elif fill and fill.startswith('#'):
-            colors.add(fill.upper())
-        elif fill and fill.startswith('var('):
-            # Handle CSS variables like var(--color-calendar-graph-day-L1-bg)
-            continue
+        if not contribution_cells:
+            # Try finding any rect in svg with class containing "ContributionCalendar"
+            contribution_cells = soup.select('svg.js-calendar-graph-svg rect, svg.ContributionCalendar-day')
 
-    # Method 2: Look for CSS custom properties in style tags
-    style_tags = soup.find_all('style')
-    for style_tag in style_tags:
-        if style_tag.string:
-            # Look for calendar-specific color definitions
-            # e.g., --color-calendar-graph-day-L4-bg: #ff8c00;
-            calendar_colors = re.findall(
-                r'--color-calendar[^:]*:\s*(#[0-9a-fA-F]{6})',
-                style_tag.string
-            )
-            colors.update([c.upper() for c in calendar_colors])
+        print(f"Found {len(contribution_cells)} contribution cells")
 
-            # Also get any hex colors in the style tag
-            all_colors = re.findall(r'#[0-9a-fA-F]{6}', style_tag.string)
-            colors.update([c.upper() for c in all_colors])
+        for cell in contribution_cells:
+            # Extract fill color from style or fill attribute
+            style = cell.get('style', '')
+            fill = cell.get('fill', '')
 
-    # Method 3: Check for inline SVG styles
-    svgs = soup.find_all('svg')
-    for svg in svgs:
-        svg_string = str(svg)
-        if 'calendar' in svg_string.lower() or 'contribution' in svg_string.lower():
-            svg_colors = re.findall(r'#[0-9a-fA-F]{6}', svg_string)
-            colors.update([c.upper() for c in svg_colors])
+            if 'fill:' in style:
+                color_match = re.search(r'fill:\s*(#[0-9a-fA-F]{6})', style)
+                if color_match:
+                    colors.add(color_match.group(1).upper())
+            elif fill and fill.startswith('#'):
+                colors.add(fill.upper())
+            elif fill and fill.startswith('var('):
+                # Handle CSS variables like var(--color-calendar-graph-day-L1-bg)
+                continue
+
+        # Method 2: Look for CSS custom properties in style tags
+        style_tags = soup.find_all('style')
+        for style_tag in style_tags:
+            if style_tag.string:
+                # Look for calendar-specific color definitions
+                # e.g., --color-calendar-graph-day-L4-bg: #ff8c00;
+                calendar_colors = re.findall(
+                    r'--color-calendar[^:]*:\s*(#[0-9a-fA-F]{6})',
+                    style_tag.string
+                )
+                colors.update([c.upper() for c in calendar_colors])
+
+        # Method 3: Check for inline SVG styles
+        svgs = soup.find_all('svg')
+        for svg in svgs:
+            svg_string = str(svg)
+            if 'calendar' in svg_string.lower() or 'contribution' in svg_string.lower():
+                svg_colors = re.findall(r'fill=["\']?(#[0-9a-fA-F]{6})', svg_string)
+                colors.update([c.upper() for c in svg_colors])
 
     print(f"Extracted {len(colors)} unique colors")
     if colors:
         print(f"Sample colors: {list(sorted(colors))[:10]}")
 
     return list(sorted(colors)) if colors else None
+
+
+def create_theme_from_name(holiday_name):
+    """Create a theme dict from a holiday name using predefined colors."""
+    holiday_colors = {
+        'halloween': {
+            'name': 'halloween',
+            'description': 'Halloween Theme (Orange & Black)',
+            'colors': ['#000000', '#8B4513', '#FF6347', '#FF8C00', '#FFA500', '#FFD700'],
+        },
+        'christmas': {
+            'name': 'christmas',
+            'description': 'Christmas Theme (Red & Green)',
+            'colors': ['#006400', '#228B22', '#DC143C', '#FF0000', '#FFD700', '#FFFFFF'],
+        },
+        'lunar_new_year': {
+            'name': 'lunar_new_year',
+            'description': 'Lunar New Year Theme (Red & Gold)',
+            'colors': ['#8B0000', '#DC143C', '#FF0000', '#FF6347', '#FFD700', '#FFA500'],
+        },
+        'pride': {
+            'name': 'pride',
+            'description': 'Pride Month Theme (Rainbow)',
+            'colors': ['#FF0000', '#FFA500', '#FFFF00', '#008000', '#0000FF', '#800080'],
+        },
+        'valentines': {
+            'name': 'valentines',
+            'description': 'Valentine\'s Day Theme (Pink & Red)',
+            'colors': ['#FF1493', '#FF69B4', '#FFB6C1', '#DC143C', '#FF0000'],
+        },
+    }
+
+    return holiday_colors.get(holiday_name)
+
+
+def create_theme_from_colors_and_name(colors, holiday_name):
+    """Create a theme using detected colors and holiday name."""
+    descriptions = {
+        'halloween': 'Halloween Theme (Orange & Black)',
+        'christmas': 'Christmas Theme (Red & Green)',
+        'lunar_new_year': 'Lunar New Year Theme (Red & Gold)',
+        'pride': 'Pride Month Theme (Rainbow)',
+        'valentines': 'Valentine\'s Day Theme (Pink & Red)',
+    }
+
+    return {
+        'name': holiday_name,
+        'description': descriptions.get(holiday_name, f'{holiday_name.title()} Theme'),
+        'colors': colors,
+    }
 
 
 def is_orange_ish(hex_color):
@@ -313,19 +439,60 @@ def main():
 
     print(f"Checking GitHub profile for holiday theme: {username}")
 
-    # Fetch and analyze GitHub profile
-    html = fetch_github_profile(username)
-    colors = extract_contribution_colors(html)
+    # Try method 1: Fetch contribution graph directly
+    print("\n=== Method 1: Fetching contribution graph SVG ===")
+    graph_html = fetch_contribution_graph_data(username)
+
+    # Check for holiday message first (most reliable)
+    holiday_from_message = detect_holiday_message(graph_html) if graph_html else None
+
+    # Extract colors
+    colors = extract_contribution_colors(graph_html, is_graph_svg=True) if graph_html else None
+
+    # Try method 2: Fetch full profile page if needed
+    if not colors and not holiday_from_message:
+        print("\n=== Method 2: Fetching full profile page ===")
+        html = fetch_github_profile(username)
+        holiday_from_message = detect_holiday_message(html) if html and not holiday_from_message else holiday_from_message
+        colors = extract_contribution_colors(html, is_graph_svg=False) if html else None
+
+    # If we found a holiday message but no colors, try to use predefined colors for that holiday
+    if holiday_from_message and not colors:
+        print(f"\n✓ Holiday detected from message: {holiday_from_message}")
+        print("Using predefined holiday colors")
+        theme = create_theme_from_name(holiday_from_message)
+        if theme:
+            light_scheme = generate_color_scheme(theme, mode='light')
+            dark_scheme = generate_color_scheme(theme, mode='dark')
+
+            result = {
+                'holiday_detected': True,
+                'theme_name': holiday_from_message,
+                'theme_description': theme['description'],
+                'light_color': light_scheme['snake'],
+                'dark_color': dark_scheme['snake'],
+                'light_dots': ', '.join(light_scheme['dots']),
+                'dark_dots': ', '.join(dark_scheme['dots']),
+                'all_colors': theme['colors'],
+                'detection_method': 'message',
+            }
+            output_result(result)
+            return
 
     if not colors:
         print("Could not detect contribution colors, using default scheme")
         output_result({'holiday_detected': False})
         return
 
-    print(f"Detected {len(colors)} unique colors: {colors[:10]}...")  # Show first 10
+    print(f"\n✓ Detected {len(colors)} unique colors: {colors[:10]}...")  # Show first 10
 
-    # Detect holiday theme
+    # Detect holiday theme from colors
     theme = detect_holiday_theme(colors)
+
+    # If we detected a holiday from message, use that to help identify the theme
+    if holiday_from_message and not theme:
+        print(f"Creating theme based on message: {holiday_from_message}")
+        theme = create_theme_from_colors_and_name(colors, holiday_from_message)
 
     if not theme:
         print("No special holiday theme detected")
@@ -351,6 +518,9 @@ def main():
     light_scheme = generate_color_scheme(theme, mode='light')
     dark_scheme = generate_color_scheme(theme, mode='dark')
 
+    # Determine detection method
+    detection_method = 'message' if holiday_from_message else 'colors'
+
     # Output results
     result = {
         'holiday_detected': True,
@@ -361,6 +531,8 @@ def main():
         'light_dots': ', '.join(light_scheme['dots']),
         'dark_dots': ', '.join(dark_scheme['dots']),
         'all_colors': theme['colors'],
+        'detection_method': detection_method,
+    }
     }
 
     output_result(result)
