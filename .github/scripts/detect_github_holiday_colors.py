@@ -533,7 +533,6 @@ def main():
         'all_colors': theme['colors'],
         'detection_method': detection_method,
     }
-    }
 
     output_result(result)
 
