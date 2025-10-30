@@ -75,12 +75,36 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r .github/scripts/requirements.txt
+
+      - name: Detect GitHub Holiday Colors
+        id: holiday
+        env:
+          GITHUB_USERNAME: ${{ github.repository_owner }}
+        run: python .github/scripts/detect_github_holiday_colors.py
+
       - name: Set color scheme by China time
         id: colors
         shell: python
         env:
           MODE: ${{ github.event.inputs.mode || env.DEFAULT_MODE }}
           MANUAL_STYLE: ${{ github.event.inputs.style || '' }}
+          HOLIDAY_DETECTED: ${{ steps.holiday.outputs.holiday_detected }}
+          HOLIDAY_LIGHT_COLOR: ${{ steps.holiday.outputs.light_color }}
+          HOLIDAY_DARK_COLOR: ${{ steps.holiday.outputs.dark_color }}
+          HOLIDAY_LIGHT_DOTS: ${{ steps.holiday.outputs.light_dots }}
+          HOLIDAY_DARK_DOTS: ${{ steps.holiday.outputs.dark_dots }}
+          HOLIDAY_THEME_NAME: ${{ steps.holiday.outputs.theme_name }}
+          HOLIDAY_THEME_DESC: ${{ steps.holiday.outputs.theme_description }}
           LIGHT_SCHEMAS_DAY: |
             [
               {"style":"海洋","snake":"#0277BD","dots":["#E1F5FE","#81D4FA","#4FC3F7","#29B6F6","#039BE5"]},
@@ -164,39 +188,59 @@ jobs:
           manual_style = os.environ.get('MANUAL_STYLE', '')
           now_china = datetime.now(ZoneInfo('Asia/Shanghai'))
 
-          # Determine which mode to use
-          if mode == 'manual' and manual_style:
+          # Check if holiday theme is detected
+          holiday_detected = os.environ.get('HOLIDAY_DETECTED', 'false').lower() == 'true'
+          
+          if holiday_detected:
+              # Use holiday colors
+              print("🎉 Using detected holiday theme!")
+              theme_name = os.environ.get('HOLIDAY_THEME_NAME', 'unknown')
+              theme_desc = os.environ.get('HOLIDAY_THEME_DESC', 'Holiday Theme')
+              print(f"Theme: {theme_desc} ({theme_name})")
+              
+              light_snake = os.environ.get('HOLIDAY_LIGHT_COLOR', '#40c463')
+              dark_snake = os.environ.get('HOLIDAY_DARK_COLOR', '#39d353')
+              light_dots = os.environ.get('HOLIDAY_LIGHT_DOTS', '#ebedf0, #9be9a8, #40c463, #30a14e, #216e39')
+              dark_dots = os.environ.get('HOLIDAY_DARK_DOTS', '#161b22, #0e4429, #006d32, #26a641, #39d353')
+          else:
+              # Use custom color schemes
+              print("Using custom color schemes")
+              
+              # Determine which mode to use
+              if mode == 'manual' and manual_style:
               # Manual mode: user specifies the style string, e.g. day1-海洋-深海 or hour1-深夜紫
               if manual_style.startswith('day'):
-                  # dayN-xxx-yyy
-                  idx = int(manual_style[3:].split('-')[0]) - 1  # day1 -> 0
-                  light = json.loads(os.environ['LIGHT_SCHEMAS_DAY'])
-                  dark = json.loads(os.environ['DARK_SCHEMAS_DAY'])
-              elif manual_style.startswith('hour'):
-                  # hourN-xxx
-                  idx = int(manual_style[4:].split('-')[0]) - 1  # hour1 -> 0
+                  # Manual mode: user specifies the style string, e.g. day1-海洋-深海 or hour1-深夜紫
+                  if manual_style.startswith('day'):
+                      # dayN-xxx-yyy
+                      idx = int(manual_style[3:].split('-')[0]) - 1  # day1 -> 0
+                      light = json.loads(os.environ['LIGHT_SCHEMAS_DAY'])
+                      dark = json.loads(os.environ['DARK_SCHEMAS_DAY'])
+                  elif manual_style.startswith('hour'):
+                      # hourN-xxx
+                      idx = int(manual_style[4:].split('-')[0]) - 1  # hour1 -> 0
+                      light = json.loads(os.environ['LIGHT_SCHEMAS_HOUR'])
+                      dark = json.loads(os.environ['DARK_SCHEMAS_HOUR'])
+                  else:
+                      raise ValueError('Invalid style format, must start with day or hour')
+              elif mode == 'auto-hour':
+                  # Hour mode: 24 color schemes based on hour
+                  idx = now_china.hour  # 0-23
                   light = json.loads(os.environ['LIGHT_SCHEMAS_HOUR'])
                   dark = json.loads(os.environ['DARK_SCHEMAS_HOUR'])
               else:
-                  raise ValueError('Invalid style format, must start with day or hour')
-          elif mode == 'auto-hour':
-              # Hour mode: 24 color schemes based on hour
-              idx = now_china.hour  # 0-23
-              light = json.loads(os.environ['LIGHT_SCHEMAS_HOUR'])
-              dark = json.loads(os.environ['DARK_SCHEMAS_HOUR'])
-          else:
-              # Day mode (default): 7 color schemes based on weekday
-              idx = now_china.weekday()  # 0=Monday, 6=Sunday
-              light = json.loads(os.environ['LIGHT_SCHEMAS_DAY'])
-              dark = json.loads(os.environ['DARK_SCHEMAS_DAY'])
+                  # Day mode (default): 7 color schemes based on weekday
+                  idx = now_china.weekday()  # 0=Monday, 6=Sunday
+                  light = json.loads(os.environ['LIGHT_SCHEMAS_DAY'])
+                  dark = json.loads(os.environ['DARK_SCHEMAS_DAY'])
 
-          entry_light = light[idx]
-          entry_dark = dark[idx]
+              entry_light = light[idx]
+              entry_dark = dark[idx]
 
-          light_snake = entry_light['snake'].strip()
-          dark_snake = entry_dark['snake'].strip()
-          light_dots = ', '.join([d.strip() for d in entry_light['dots']])
-          dark_dots = ', '.join([d.strip() for d in entry_dark['dots']])
+              light_snake = entry_light['snake'].strip()
+              dark_snake = entry_dark['snake'].strip()
+              light_dots = ', '.join([d.strip() for d in entry_light['dots']])
+              dark_dots = ', '.join([d.strip() for d in entry_dark['dots']])
 
           out = os.environ.get('GITHUB_OUTPUT')
           if out:
