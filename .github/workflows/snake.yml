@@ -82,18 +82,28 @@ jobs:
           cache: 'npm'
           cache-dependency-path: .github/scripts/package-lock.json
 
-      - name: Install dependencies
+      - name: Install Bun
+        run: |
+          curl -fsSL https://bun.sh/install | bash
+          export PATH="$HOME/.bun/bin:$PATH"
+
+      - name: Install dependencies with Bun
         working-directory: .github/scripts
-        run: npm ci
+        run: |
+          bun install
 
       - name: Install Puppeteer browsers
-        run: npx puppeteer browsers install chromium
+        run: |
+          export PATH="$HOME/.bun/bin:$PATH"
+          npx puppeteer browsers install chromium
 
       - name: Detect GitHub Holiday Colors
         id: holiday
         env:
           GITHUB_USERNAME: ${{ github.repository_owner }}
-        run: node .github/scripts/github_holiday_puppeteer.js
+        run: |
+          export PATH="$HOME/.bun/bin:$PATH"
+          node .github/scripts/github_holiday_puppeteer.js
 
       - name: Set color scheme by China time
         id: colors
