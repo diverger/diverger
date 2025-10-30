@@ -190,14 +190,14 @@ jobs:
 
           # Check if holiday theme is detected
           holiday_detected = os.environ.get('HOLIDAY_DETECTED', 'false').lower() == 'true'
-          
+
           if holiday_detected:
               # Use holiday colors
               print("🎉 Using detected holiday theme!")
               theme_name = os.environ.get('HOLIDAY_THEME_NAME', 'unknown')
               theme_desc = os.environ.get('HOLIDAY_THEME_DESC', 'Holiday Theme')
               print(f"Theme: {theme_desc} ({theme_name})")
-              
+
               light_snake = os.environ.get('HOLIDAY_LIGHT_COLOR', '#40c463')
               dark_snake = os.environ.get('HOLIDAY_DARK_COLOR', '#39d353')
               light_dots = os.environ.get('HOLIDAY_LIGHT_DOTS', '#ebedf0, #9be9a8, #40c463, #30a14e, #216e39')
@@ -205,7 +205,7 @@ jobs:
           else:
               # Use custom color schemes
               print("Using custom color schemes")
-              
+
               # Determine which mode to use
               if mode == 'manual' and manual_style:
                   # Manual mode: user specifies the style string, e.g. day1-海洋-深海 or hour1-深夜紫
