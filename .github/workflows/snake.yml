@@ -95,10 +95,6 @@ jobs:
         working-directory: .github/scripts
         run: npm install puppeteer@24.27.0
 
-      - name: Install Puppeteer browsers
-        working-directory: .github/scripts
-        run: npx puppeteer browsers install chromium
-
       - name: Detect GitHub Holiday Colors
         id: holiday
         env:
