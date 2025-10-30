@@ -208,8 +208,6 @@ jobs:
               
               # Determine which mode to use
               if mode == 'manual' and manual_style:
-              # Manual mode: user specifies the style string, e.g. day1-海洋-深海 or hour1-深夜紫
-              if manual_style.startswith('day'):
                   # Manual mode: user specifies the style string, e.g. day1-海洋-深海 or hour1-深夜紫
                   if manual_style.startswith('day'):
                       # dayN-xxx-yyy
