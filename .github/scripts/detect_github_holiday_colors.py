@@ -37,7 +37,7 @@ PRIMER_COLORS = {
 def extract_colors_from_dom(username):
     """
     Extract actual colors from GitHub contribution calendar DOM.
-    Uses regex to find data-level elements and their computed colors.
+    Looks for CSS variables, style tags, and inline styles.
     Returns dict with colors or None if failed.
     """
     try:
@@ -51,20 +51,33 @@ def extract_colors_from_dom(username):
         with urllib.request.urlopen(req, timeout=10) as response:
             html = response.read().decode('utf-8')
 
-        # Extract all contribution calendar day elements with their fill colors
-        # Pattern: <rect ... data-level="X" ... fill="COLOR" or style="fill:COLOR"
+        level_colors = {}
+
+        # Method 1: Look for CSS variables in style tags (--color-calendar-graph-day-L0-bg, etc.)
+        css_var_pattern = r'--color-calendar-graph-day-L(\d)-bg:\s*([#a-fA-F0-9]{6,7})'
+        css_matches = re.findall(css_var_pattern, html)
+        for level, color in css_matches:
+            level = int(level)
+            if level not in level_colors:
+                level_colors[level] = color.lower() if color.startswith('#') else f'#{color.lower()}'
+
+        if len(level_colors) >= 4:
+            print(f"✓ Extracted {len(level_colors)} color levels from CSS variables")
+            print(f"  Colors: {level_colors}")
+            return level_colors
+
+        # Method 2: Look for data-level with inline fill or style attributes
         patterns = [
             r'data-level="(\d)"[^>]*fill="([#\w]+)"',
             r'data-level="(\d)"[^>]*style="[^"]*fill:\s*([#\w]+)',
             r'fill="([#\w]+)"[^>]*data-level="(\d)"',
+            r'<rect[^>]*data-level="(\d)"[^>]*class="[^"]*"[^>]*style="[^"]*background[^:]*:\s*([#\w]+)',
         ]
 
-        level_colors = {}
         for pattern in patterns:
             matches = re.findall(pattern, html, re.IGNORECASE)
             for match in matches:
                 if len(match) == 2:
-                    # Normalize order (some patterns capture level first, some second)
                     if match[0].isdigit():
                         level, color = match
                     else:
@@ -74,12 +87,27 @@ def extract_colors_from_dom(username):
                     if level not in level_colors and color.startswith('#'):
                         level_colors[level] = color.lower()
 
-        if len(level_colors) >= 4:  # Need at least 4 levels to be valid
-            print(f"✓ Extracted {len(level_colors)} color levels from DOM")
+        if len(level_colors) >= 4:
+            print(f"✓ Extracted {len(level_colors)} color levels from DOM attributes")
             print(f"  Colors: {level_colors}")
             return level_colors
 
-        print("✗ Could not extract enough color levels from DOM")
+        # Method 3: Look for any contribution calendar color definitions in <style> tags
+        style_pattern = r'\.ContributionCalendar-day\[data-level="(\d)"\][^}]*(?:background-color|fill):\s*([#a-fA-F0-9]{6,7})'
+        style_matches = re.findall(style_pattern, html)
+        for level, color in style_matches:
+            level = int(level)
+            if level not in level_colors:
+                level_colors[level] = color.lower() if color.startswith('#') else f'#{color.lower()}'
+
+        if len(level_colors) >= 4:
+            print(f"✓ Extracted {len(level_colors)} color levels from style tags")
+            print(f"  Colors: {level_colors}")
+            return level_colors
+
+        print(f"✗ Could not extract enough color levels from DOM (found {len(level_colors)} levels)")
+        if level_colors:
+            print(f"  Partial colors found: {level_colors}")
         return None
 
     except Exception as e:
