@@ -75,16 +75,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          python-version: '3.11'
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: .github/scripts/package-lock.json
+
+      - name: Install dependencies
+        working-directory: .github/scripts
+        run: npm ci
+
+      - name: Install Puppeteer browsers
+        run: npx puppeteer browsers install chromium
 
       - name: Detect GitHub Holiday Colors
         id: holiday
         env:
           GITHUB_USERNAME: ${{ github.repository_owner }}
-        run: python .github/scripts/detect_github_holiday_colors.py
+        run: node .github/scripts/github_holiday_puppeteer.js
 
       - name: Set color scheme by China time
         id: colors

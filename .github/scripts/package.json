@@ -1,0 +1,15 @@
+{
+  "name": "github-holiday-colors",
+  "version": "1.0.0",
+  "description": "Detect GitHub holiday color schemes using Puppeteer",
+  "main": "github_holiday_puppeteer.js",
+  "scripts": {
+    "detect": "node github_holiday_puppeteer.js"
+  },
+  "dependencies": {
+    "puppeteer": "^21.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
