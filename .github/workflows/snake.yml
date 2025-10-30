@@ -91,18 +91,20 @@ jobs:
           export PATH="$HOME/.bun/bin:$PATH"
           bun install
 
+      - name: Install Puppeteer (npm)
+        working-directory: .github/scripts
+        run: npm install puppeteer@24.27.0
+
       - name: Install Puppeteer browsers
-        run: |
-          export PATH="$HOME/.bun/bin:$PATH"
-          npx puppeteer browsers install chromium
+        working-directory: .github/scripts
+        run: npx puppeteer browsers install chromium
 
       - name: Detect GitHub Holiday Colors
         id: holiday
         env:
           GITHUB_USERNAME: ${{ github.repository_owner }}
-        run: |
-          export PATH="$HOME/.bun/bin:$PATH"
-          node .github/scripts/github_holiday_puppeteer.js
+        working-directory: .github/scripts
+        run: node github_holiday_puppeteer.js
 
       - name: Set color scheme by China time
         id: colors
