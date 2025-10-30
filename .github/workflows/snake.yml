@@ -85,12 +85,14 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r .github/scripts/requirements.txt
+          playwright install chromium
+          playwright install-deps chromium
 
       - name: Detect GitHub Holiday Colors
         id: holiday
         env:
           GITHUB_USERNAME: ${{ github.repository_owner }}
-        run: python .github/scripts/detect_github_holiday_colors.py
+        run: python .github/scripts/detect_github_holiday_colors_v2.py
 
       - name: Set color scheme by China time
         id: colors
