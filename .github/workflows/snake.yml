@@ -310,7 +310,7 @@ jobs:
                 "showCount": true,
                 "showPercentage": false,
                 "color": "#bf3989",
-                "fontStyle": "italic"
+                "fontStyle": "bold"
               },
               {
                 "position": "follow",
