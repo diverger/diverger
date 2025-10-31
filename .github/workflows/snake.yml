@@ -177,11 +177,26 @@ jobs:
           # Check if holiday theme is detected
           holiday_detected = os.environ.get('HOLIDAY_DETECTED', 'false').lower() == 'true'
 
+          theme_icon = ''
+          theme_name = ''
+
           if holiday_detected:
               # Use holiday colors directly from GitHub
               print("🎉 Using detected holiday theme!")
               theme_name = os.environ.get('HOLIDAY_THEME_NAME', 'unknown')
               print(f"Theme: {theme_name}")
+
+              match theme_name:
+                case 'halloween':
+                  theme_icon = '🎃 '
+                case 'christmas':
+                  theme_icon = '🎄 '
+                case 'new_year':
+                  theme_icon = '🎉 '
+                case 'easter':
+                  theme_icon = '🐣 '
+                case 'valentines':
+                  theme_icon = '❤️ '
 
               # Get the color palettes directly
               light_colors_str = os.environ.get('HOLIDAY_LIGHT_COLORS', '')
@@ -270,6 +285,9 @@ jobs:
                   f.write(f"dark_color={dark_snake}\n")
                   f.write(f"light_dots={light_dots}\n")
                   f.write(f"dark_dots={dark_dots}\n")
+                  if holiday_detected:
+                      f.write(f"theme_icon={theme_icon}\n")
+                      f.write(f"theme_name={theme_name}\n")
 
       - name: Generate GitHub Contributions Snake Animations
         uses: diverger/gh-magic-matrix/snake@main
@@ -287,7 +305,7 @@ jobs:
               },
               {
                 "position": "top-right",
-                "prefix": "",
+                "prefix": "Happy ${{ steps.colors.outputs.theme_name }} ${{ steps.colors.outputs.theme_icon }}",
                 "suffix": " killed",
                 "showCount": true,
                 "showPercentage": false,
