@@ -8,7 +8,7 @@ async function detectGitHubHoliday(username) {
 
   let browser;
   try {
-    // 启动浏览器
+    // Launch the browser
     browser = await puppeteer.launch({
       headless: true,
       args: [
@@ -21,7 +21,7 @@ async function detectGitHubHoliday(username) {
 
     const page = await browser.newPage();
 
-    // 设置视口和用户代理
+    // Set viewport and user agent
     await page.setViewport({ width: 1920, height: 1080 });
     await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36');
 
@@ -29,18 +29,18 @@ async function detectGitHubHoliday(username) {
     console.log(`\n=== Method 1: Live DOM color extraction ===`);
     console.log(`Fetching rendered page from ${url}...`);
 
-    // 导航到页面并等待完全加载
+    // Navigate to the page and wait for it to fully load
     await page.goto(url, {
       waitUntil: 'networkidle2',
       timeout: 30000
     });
 
-    // 等待贡献图加载
+    // Wait for the contribution graph to load
     await page.waitForSelector('.ContributionCalendar-day', {
       timeout: 10000
     });
 
-    // 提取实际渲染的颜色
+    // Extract the actual rendered colors
     const colorData = await page.evaluate(() => {
       const days = document.querySelectorAll('.ContributionCalendar-day');
       const levelColors = {};
@@ -48,11 +48,11 @@ async function detectGitHubHoliday(username) {
       days.forEach(day => {
         const level = day.getAttribute('data-level');
         if (level && !levelColors[level]) {
-          // 获取计算后的样式
+          // Get computed style
           const computedStyle = window.getComputedStyle(day);
           let color = computedStyle.fill || computedStyle.backgroundColor;
 
-          // 转换为十六进制
+          // Convert to hexadecimal
           if (color && color.startsWith('rgb')) {
             const rgb = color.match(/\d+/g);
             if (rgb && rgb.length >= 3) {
@@ -74,7 +74,7 @@ async function detectGitHubHoliday(username) {
     console.log(`✓ Extracted ${Object.keys(colorData).length} color levels from live DOM`);
     console.log(`  Colors:`, colorData);
 
-    // 分析颜色检测节日主题
+    // Analyze colors to detect holiday themes
     if (Object.keys(colorData).length >= 3) {
       const theme = analyzeColorsForTheme(colorData);
       if (theme) {
@@ -83,32 +83,48 @@ async function detectGitHubHoliday(username) {
       }
     }
 
-    // 检查节日消息
-    console.log(`\n=== Method 2: HTML message detection ===`);
-    const holidayMessage = await page.evaluate(() => {
-      const text = document.body.innerText;
-      const messages = [
-        'Happy Halloween!',
-        'Happy Holidays!',
-        'Merry Christmas!',
-        'Happy Lunar New Year!',
-        'Happy Valentine\'s Day!',
-        'Happy Pride!'
+    // Extract the holiday theme and corresponding CSS color palette for contribution blocks
+    const holidayData = await page.evaluate(() => {
+      // Find the element with the data-holiday attribute
+      const holidayElement = document.querySelector('[data-holiday]');
+      if (!holidayElement) return null;
+
+      // Get the value of the data-holiday attribute
+      const holidayName = holidayElement.getAttribute('data-holiday');
+
+      // Construct CSS variable names based on the holiday name
+      const cssVariableNames = [
+        `--contribution-default-bgColor-0`, // Fixed default background color
+        `--contribution-${holidayName}-bgColor-1`,
+        `--contribution-${holidayName}-bgColor-2`,
+        `--contribution-${holidayName}-bgColor-3`,
+        `--contribution-${holidayName}-bgColor-4`
       ];
-      return messages.find(msg => text.includes(msg)) || null;
+
+      // Retrieve the corresponding CSS variable values
+      const root = document.documentElement;
+      const colors = cssVariableNames.map(name => ({
+        name,
+        color: getComputedStyle(root).getPropertyValue(name).trim()
+      }));
+
+      return { holidayName, colors };
     });
 
-    if (holidayMessage) {
-      console.log(`✓ Found holiday message: "${holidayMessage}"`);
-      const theme = messageToTheme(holidayMessage);
-      if (theme) {
-        return createResult(theme, 'html-message');
-      }
+    if (holidayData) {
+      console.log(`Detected holiday: ${holidayData.holidayName}`);
+      console.log(`CSS Variables and Colors:`);
+      holidayData.colors.forEach(({ name, color }) => {
+        console.log(`${name}: ${color}`);
+      });
+      return createResult(holidayData.holidayName, 'css-variable', {
+        [holidayData.holidayName]: holidayData.colors
+      });
     } else {
-      console.log('✗ No holiday message found');
+      console.log('No holiday detected.');
     }
 
-    // 日期检测兜底
+    // Fallback to date-based detection
     console.log(`\n=== Method 3: Date-based holiday detection ===`);
     const dateTheme = checkHolidayByDate();
     if (dateTheme) {
@@ -116,13 +132,13 @@ async function detectGitHubHoliday(username) {
       return createResult(dateTheme, 'date');
     }
 
-    // 默认主题
+    // Default theme
     console.log('\n✗ No holiday theme detected');
     return createResult('default', 'none');
 
   } catch (error) {
     console.error(`Puppeteer extraction failed: ${error.message}`);
-    // 回退到日期检测
+    // Fallback to date detection
     console.log('\n=== Fallback: Date-based detection ===');
     const dateTheme = checkHolidayByDate();
     if (dateTheme) {
@@ -140,20 +156,20 @@ async function detectGitHubHoliday(username) {
 function analyzeColorsForTheme(colors) {
   const colorValues = Object.values(colors).join(' ').toLowerCase();
 
-  // 万圣节：橙色系
+  // Halloween: Orange theme
   if (colorValues.includes('fb85') || colorValues.includes('d471') ||
       colorValues.includes('bc4c') || colorValues.includes('f60')) {
     return 'halloween';
   }
 
-  // 圣诞节：红绿混合
+  // Christmas: Red and green mix
   const hasRed = colorValues.includes('cf22') || colorValues.includes('a40e');
   const hasGreen = colorValues.includes('1a7f') || colorValues.includes('1163');
   if (hasRed && hasGreen) {
     return 'christmas';
   }
 
-  // 粉紫色主题
+  // Pink and purple theme
   const hasPink = colorValues.includes('bf39') || colorValues.includes('8250');
   const hasPurple = colorValues.includes('622c') || colorValues.includes('bf3');
   if (hasPink || hasPurple) {
@@ -164,18 +180,6 @@ function analyzeColorsForTheme(colors) {
   }
 
   return null;
-}
-
-function messageToTheme(message) {
-  const themes = {
-    'Happy Halloween!': 'halloween',
-    'Happy Holidays!': 'christmas',
-    'Merry Christmas!': 'christmas',
-    'Happy Lunar New Year!': 'lunar_new_year',
-    'Happy Valentine\'s Day!': 'valentines',
-    'Happy Pride!': 'pride'
-  };
-  return themes[message] || null;
 }
 
 function checkHolidayByDate() {
@@ -265,12 +269,12 @@ function createResult(theme, method, extractedColors = null) {
   };
 }
 
-// 主函数
+// Main function
 async function main() {
   const username = process.env.GITHUB_USERNAME || process.argv[2] || 'diverger';
   const result = await detectGitHubHoliday(username);
 
-  // 输出为 GitHub Actions 格式
+  // Output in GitHub Actions format
   const githubOutput = process.env.GITHUB_OUTPUT;
   if (githubOutput) {
     const fs = require('fs');
@@ -282,7 +286,7 @@ async function main() {
     fs.appendFileSync(githubOutput, output);
   }
 
-  // 同时打印 JSON
+  // Also print JSON
   console.log('\n=== Detection Result ===');
   console.log(JSON.stringify(result, null, 2));
 }
