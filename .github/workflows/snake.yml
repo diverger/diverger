@@ -314,7 +314,7 @@ jobs:
                 "fontStyle": "bold"
               },
               {
-                "position": "free",
+                "position": "follow",
                 "mode": "level",
                 "prefix": "{img:0} ",
                 "suffix": "",
