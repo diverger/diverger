@@ -77,7 +77,7 @@ jobs:
 
       - name: Detect GitHub Holiday Colors
         id: holiday
-        uses: diverger/gh-contribution-calendar-theme@main
+        uses: diverger/gh-contribution-calendar-theme@v1
         with:
           github-username: ${{ github.repository_owner }}
 
@@ -178,47 +178,43 @@ jobs:
           holiday_detected = os.environ.get('HOLIDAY_DETECTED', 'false').lower() == 'true'
 
           if holiday_detected:
-              # Use holiday colors from grid colors
+              # Use holiday colors directly from GitHub
               print("🎉 Using detected holiday theme!")
               theme_name = os.environ.get('HOLIDAY_THEME_NAME', 'unknown')
               print(f"Theme: {theme_name}")
 
-              # Parse light theme grid colors from Puppeteer output
+              # Get the color palettes directly
               light_colors_str = os.environ.get('HOLIDAY_LIGHT_COLORS', '')
-              # Parse dark theme grid colors from Puppeteer output
               dark_colors_str = os.environ.get('HOLIDAY_DARK_COLORS', '')
 
               if light_colors_str and dark_colors_str:
-                  # Split the color palette strings (e.g., "#color1, #color2, #color3, #color4, #color5")
+                  # Split the color palette strings
                   light_grid_colors = [c.strip() for c in light_colors_str.split(',')]
                   dark_grid_colors = [c.strip() for c in dark_colors_str.split(',')]
 
                   if len(light_grid_colors) >= 5 and len(dark_grid_colors) >= 5:
-                      # Grid colors: [level0, level1, level2, level3, level4]
-                      # Generate snake colors based on grid colors
-
-                      # For light mode: use level 3 for snake (darker color)
+                      # Use level 3 for snake (good contrast)
                       light_snake = light_grid_colors[3]
+                      # Use all colors for dots
                       light_dots = ', '.join(light_grid_colors)
 
-                      # For dark mode: use level 2 for snake (medium brightness)
-                      dark_snake = dark_grid_colors[2]
+                      # Use level 4 for snake (brightest for dark mode)
+                      dark_snake = dark_grid_colors[4]
+                      # Use all colors for dots
                       dark_dots = ', '.join(dark_grid_colors)
 
-                      print(f"Light grid colors: {light_grid_colors}")
-                      print(f"Light snake: {light_snake}, Light dots: {light_dots}")
-                      print(f"Dark grid colors: {dark_grid_colors}")
-                      print(f"Dark snake: {dark_snake}, Dark dots: {dark_dots}")
+                      print(f"Light snake: {light_snake}, dots: {light_dots}")
+                      print(f"Dark snake: {dark_snake}, dots: {dark_dots}")
                   else:
-                      # Fallback if not enough colors
-                      print(f"Warning: Not enough grid colors (light: {len(light_grid_colors)}, dark: {len(dark_grid_colors)}), using defaults")
+                      # Fallback
+                      print(f"⚠️  Not enough colors, using defaults")
                       light_snake = light_grid_colors[0] if light_grid_colors else '#40c463'
                       dark_snake = dark_grid_colors[0] if dark_grid_colors else '#39d353'
                       light_dots = light_colors_str or '#ebedf0, #9be9a8, #40c463, #30a14e, #216e39'
                       dark_dots = dark_colors_str or '#161b22, #0e4429, #006d32, #26a641, #39d353'
               else:
-                  # Fallback to default colors
-                  print("Warning: No grid colors found, using defaults")
+                  # Fallback
+                  print("⚠️  No colors found, using defaults")
                   light_snake = '#40c463'
                   dark_snake = '#39d353'
                   light_dots = '#ebedf0, #9be9a8, #40c463, #30a14e, #216e39'
@@ -228,27 +224,33 @@ jobs:
               print("Using custom color schemes")
 
               # Determine which mode to use
-              if mode == 'manual' and manual_style:
-                  # Manual mode: user specifies the style string, e.g. day1-海洋-深海 or hour1-深夜紫
-                  if manual_style.startswith('day'):
-                      # dayN-xxx-yyy
-                      idx = int(manual_style[3:].split('-')[0]) - 1  # day1 -> 0
-                      light = json.loads(os.environ['LIGHT_SCHEMAS_DAY'])
-                      dark = json.loads(os.environ['DARK_SCHEMAS_DAY'])
-                  elif manual_style.startswith('hour'):
-                      # hourN-xxx
-                      idx = int(manual_style[4:].split('-')[0]) - 1  # hour1 -> 0
-                      light = json.loads(os.environ['LIGHT_SCHEMAS_HOUR'])
-                      dark = json.loads(os.environ['DARK_SCHEMAS_HOUR'])
+              if mode == 'manual':
+                  if not manual_style:
+                      # Manual mode requires style to be selected
+                      print("⚠️  Warning: Manual mode selected but no style specified, falling back to auto-hour mode")
+                      mode = 'auto-hour'
                   else:
-                      raise ValueError('Invalid style format, must start with day or hour')
-              elif mode == 'auto-hour':
+                      # Manual mode: user specifies the style string, e.g. day1-海洋-深海 or hour1-深夜紫
+                      if manual_style.startswith('day'):
+                          # dayN-xxx-yyy
+                          idx = int(manual_style[3:].split('-')[0]) - 1  # day1 -> 0
+                          light = json.loads(os.environ['LIGHT_SCHEMAS_DAY'])
+                          dark = json.loads(os.environ['DARK_SCHEMAS_DAY'])
+                      elif manual_style.startswith('hour'):
+                          # hourN-xxx
+                          idx = int(manual_style[4:].split('-')[0]) - 1  # hour1 -> 0
+                          light = json.loads(os.environ['LIGHT_SCHEMAS_HOUR'])
+                          dark = json.loads(os.environ['DARK_SCHEMAS_HOUR'])
+                      else:
+                          raise ValueError('Invalid style format, must start with day or hour')
+
+              if mode == 'auto-hour':
                   # Hour mode: 24 color schemes based on hour
                   idx = now_china.hour  # 0-23
                   light = json.loads(os.environ['LIGHT_SCHEMAS_HOUR'])
                   dark = json.loads(os.environ['DARK_SCHEMAS_HOUR'])
-              else:
-                  # Day mode (default): 7 color schemes based on weekday
+              elif mode == 'auto-day':
+                  # Day mode: 7 color schemes based on weekday
                   idx = now_china.weekday()  # 0=Monday, 6=Sunday
                   light = json.loads(os.environ['LIGHT_SCHEMAS_DAY'])
                   dark = json.loads(os.environ['DARK_SCHEMAS_DAY'])
