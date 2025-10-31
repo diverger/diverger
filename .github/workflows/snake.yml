@@ -314,10 +314,12 @@ jobs:
               },
               {
                 "position": "follow",
+                "mode": "level",
                 "prefix": "{img:0} ",
                 "suffix": "",
                 "showCount": false,
                 "showPercentage": false,
+                "hide_progress_bar": true,
                 "fontSize": 14,
                 "images": [
                   {
@@ -330,7 +332,6 @@ jobs:
                     "textAnchorY": 1.0,
                     "spacing": 0,
                     "sprite": {
-                      "mode": "contribution-level",
                       "contributionLevels": 5,
                       "framesPerLevel": 8,
                       "frameWidth": 48,
