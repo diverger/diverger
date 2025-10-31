@@ -293,7 +293,8 @@ jobs:
         uses: diverger/gh-magic-matrix/snake@main
         with:
           github_user_name: ${{ github.repository_owner }}
-          show_contribution_counter: "true"
+          show_contribution_counter: true
+          hide_progress_bar: true
           counter_displays: |
             [
               {
@@ -319,7 +320,6 @@ jobs:
                 "suffix": "",
                 "showCount": false,
                 "showPercentage": false,
-                "hide_progress_bar": true,
                 "fontSize": 14,
                 "images": [
                   {
