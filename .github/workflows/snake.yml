@@ -307,7 +307,7 @@ jobs:
               },
               {
                 "position": "top-right",
-                "prefix": '',
+                "prefix": "${{ steps.colors.outputs.theme_name && format('Happy {0} ', steps.colors.outputs.theme_icon) || '' }}",
                 "suffix": " killed",
                 "showCount": true,
                 "showPercentage": false,
