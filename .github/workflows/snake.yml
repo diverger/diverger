@@ -325,7 +325,7 @@ jobs:
                 "images": [
                   {
                     "urlFolder": ".github/assets",
-                    "framePattern": "Lx.png",
+                    "framePattern": "L{n}.png",
                     "width": 64,
                     "height": 86,
                     "anchorY": 0.6875,
