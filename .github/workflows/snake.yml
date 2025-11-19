@@ -345,8 +345,8 @@ jobs:
               }
             ]
           outputs: |
-            dist/github-snake-dark.svg?color_dots=${{ steps.colors.outputs.dark_dots }}&color_snake=red,orange,yellow,green,blue,indigo,violet&color_shift_mode=every-step
-            dist/github-snake.svg?color_dots=${{ steps.colors.outputs.light_dots }}&color_snake=red,orange,yellow,green,blue,indigo,violet&color_shift_mode=every-step
+            dist/github-snake-dark.svg?color_dots=${{ steps.colors.outputs.dark_dots }}&color_snake=red,orange,yellow,green,blue,indigo,violet&color_shift_mode=one-eat
+            dist/github-snake.svg?color_dots=${{ steps.colors.outputs.light_dots }}&color_snake=red,orange,yellow,green,blue,indigo,violet&color_shift_mode=one-eat
 
       # push the content of <build_dir> to a branch
       # the content will be available at https://raw.githubusercontent.com/<github_user>/<repository>/<target_branch>/<file> , or as github page
